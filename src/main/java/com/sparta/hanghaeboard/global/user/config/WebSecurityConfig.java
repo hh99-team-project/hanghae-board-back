@@ -62,6 +62,17 @@ public class WebSecurityConfig {
                 sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
 
+        // Swagger 관련 경로 설정
+        String[] PUBLIC_URL = {"/v1/api-docs",
+                "/swagger-resources/**",
+                "/api/v1/**",
+                "/v3/api-docs/**",
+                "/swagger-ui/**",
+                "/swagger-ui.html",
+                "/v1/api-docs/**",
+                "/api-docs/**",
+                "api-docs" };
+
         // 회원인증 하지 않고 바로 들어 올 수 있도록 경로 허가
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
@@ -69,6 +80,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/").permitAll() // 메인 페이지 요청 허가
                         .requestMatchers("/api/user/**").permitAll() // '/api/user/'로 시작하는 요청 모두 접근 허가
                         .requestMatchers("/api/select/lecture/{lectureId}").permitAll()
+                        .requestMatchers(PUBLIC_URL).permitAll() // swagger 관련 요청 모두 접근 허가
                         .requestMatchers("/api/find/lecture/category/{lectureCategory}").permitAll()
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );

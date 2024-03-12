@@ -18,6 +18,5 @@ public class SignupRequestDto {
 
     private String nickname;
 
-    private boolean admin = false;  // 권한
     private String adminToken = "";  // 권한토큰
 }

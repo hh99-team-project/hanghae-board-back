@@ -4,8 +4,12 @@ import com.sparta.hanghaeboard.domain.comment.dto.CommentRequestDto;
 import com.sparta.hanghaeboard.domain.comment.dto.CommentResponseDto;
 import com.sparta.hanghaeboard.domain.comment.entity.Comment;
 import com.sparta.hanghaeboard.domain.comment.repository.CommentRepository;
+import com.sparta.hanghaeboard.domain.post.entity.Post;
+import com.sparta.hanghaeboard.domain.post.repository.PostRepository;
+import com.sparta.hanghaeboard.domain.user.entity.User;
 import com.sparta.hanghaeboard.global.common.exception.CustomException;
 import com.sparta.hanghaeboard.global.common.exception.ErrorCode;
+import com.sparta.hanghaeboard.global.user.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,7 +83,7 @@ public class CommentService {
     @Transactional
     public void deleteComment(Long postId, Long commentId, UserDetailsImpl userDetails) {
         // postId로 특정하여 Post 존재 여부 확인
-        Post post = postRepository.findById(lectureId)
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_POST));
 
         // DB에서 commentId로 댓글 정보 조회
