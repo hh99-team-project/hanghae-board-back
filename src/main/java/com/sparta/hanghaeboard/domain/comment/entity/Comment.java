@@ -1,6 +1,9 @@
 package com.sparta.hanghaeboard.domain.comment.entity;
 
 import com.sparta.hanghaeboard.domain.comment.dto.CommentRequestDto;
+import com.sparta.hanghaeboard.domain.post.entity.Post;
+import com.sparta.hanghaeboard.domain.user.entity.User;
+import com.sparta.hanghaeboard.global.common.entity.Timestamped;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Table(name = "comment")
+@Table(name = "comments")
 public class Comment extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

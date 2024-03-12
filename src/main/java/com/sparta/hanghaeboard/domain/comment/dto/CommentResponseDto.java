@@ -17,7 +17,7 @@ public class CommentResponseDto {
     private LocalDateTime modifiedAt; // 수정일
 
     public CommentResponseDto(Comment comment) {
-        this.nickname = comment.getUser.getNickname();
+        this.nickname = comment.getUser().getNickname();
         this.comment = comment.getComment();
         this.createdAt = comment.getCreatedAt();
         this.modifiedAt = comment.getModifiedAt();
