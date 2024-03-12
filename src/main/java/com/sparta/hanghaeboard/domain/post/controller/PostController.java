@@ -37,8 +37,8 @@ public class PostController {
     }
 
     @DeleteMapping("/posts/{postId}")
-    public ResponseEntity<?> deletePost(@PathVariable Long postId, User user) {
-        postService.deletePost(postId, user);
+    public ResponseEntity<?> deletePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        postService.deletePost(postId, userDetails.getUser());
         return ResponseEntity.ok().body(ResponseDto.success("삭제가 완료되었습니다.", null));
     }
 
