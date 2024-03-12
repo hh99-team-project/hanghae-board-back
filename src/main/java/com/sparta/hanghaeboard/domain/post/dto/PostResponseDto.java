@@ -20,7 +20,7 @@ public class PostResponseDto {
         private LocalDateTime createdAt;
 
         public CreatePostResponseDto(Post post) {
-            this.nickname = "닉네임";
+            this.nickname = post.getUser().getNickname();
             this.title = post.getTitle();
             this.contents = post.getContents();
             this.category = post.getCategory();
@@ -40,6 +40,7 @@ public class PostResponseDto {
         private LocalDateTime modifiedAt;
 
         public UpdatePostResponseDto(Post post) {
+            this.nickname = post.getUser().getNickname();
             this.title = post.getTitle();
             this.contents = post.getContents();
             this.category = post.getCategory();
@@ -60,7 +61,7 @@ public class PostResponseDto {
         private LocalDateTime modifiedAt;
 
         public GetPostResponseDto(Post post) {
-            this.nickname = "닉네임";
+            this.nickname = post.getUser().getNickname();
             this.title = post.getTitle();
             this.contents = post.getContents();
             this.category = post.getCategory();

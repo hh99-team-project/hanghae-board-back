@@ -1,11 +1,11 @@
 package com.sparta.hanghaeboard.domain.post.dto;
 
 import com.sparta.hanghaeboard.domain.post.entity.Post;
+import com.sparta.hanghaeboard.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.userdetails.User;
 
 public class PostRequestDto {
 

@@ -204,3 +204,7 @@ gradle-app.setting
 application.properties
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,intellij,gradle
+/.idea/.name
+/.idea/dataSources.xml
+/.idea/modules/hanghae-board.main.iml
+/.idea/modules.xml
