@@ -42,9 +42,9 @@ public class CommentService {
         comment.setUser(user);
 
         // Repository 저장
-        Comment saveComment = commentRepository.save(requestDto.toEntity());
+        Comment saveComment = commentRepository.save(requestDto.toEntity(user, post));
         // Entity -> ResponseDto
-        return  new CommentResponseDto(saveComment);
+        return new CommentResponseDto(saveComment);
     }
 
     // 선택한 강의의 댓글 수정
@@ -62,21 +62,19 @@ public class CommentService {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_COMMENT));
 
+        // 현재 로그인된  user 특정
+        User user = userDetails.getUser();
+
         // commentId를 작성한 userId 특정
-        Long commentUserId = comment.getUser().getId();
+        Long commentAuthorId = comment.getUser().getId();
 
-        // 현재 로그인 유저의 userId 특정
-        Long userId = userDetails.getUser().getId();
-
-        // 댓글을 작성한 사용자와 현재 로그인한 사용자가 일치 여부 확인
-        if (!commentUserId.equals(userId)) {
-            throw new CustomException(ErrorCode.AUTHORITY_ACCESS);
-        }
+        // 현재 로그인된 유저와 작성자 일치 여부 확인
+        validateCommentAuthor(user.getId(), commentAuthorId);
 
         // 댓글 수정 및 저장
-        comment = commentRepository.save(requestDto.toEntity());
+        Comment savedComment = commentRepository.save(requestDto.toEntity(user, post));
 
-        return new CommentResponseDto(comment);
+        return new CommentResponseDto(savedComment);
     }
 
     // 선택한 강의의 선택한 댓글 삭제 // + 댓글 등록한 회원만 수정 가능
@@ -90,18 +88,24 @@ public class CommentService {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_EXIST_COMMENT));
 
+        // 현재 로그인된  user 특정
+        User user = userDetails.getUser();
+
         // commentId를 작성한 userId 특정
-        Long commentUserId = comment.getUser().getId();
+        Long commentAuthorId = comment.getUser().getId();
 
-        // 현재 로그인 유저의 userId 특정
-        Long userId = userDetails.getUser().getId();
-
-        // 댓글을 작성한 사용자와 현재 로그인한 사용자가 일치하는지 확인
-        if (!commentUserId.equals(userId)) {
-            throw new CustomException(ErrorCode.AUTHORITY_ACCESS);
-        }
+        // 현재 로그인된 유저와 작성자 일치 여부 확인
+        validateCommentAuthor(user.getId(), commentAuthorId);
 
         // 댓글 삭제
         commentRepository.delete(comment);
     }
+
+    private void validateCommentAuthor(Long loggedInUserId, Long commentAuthorId) {
+        if (!loggedInUserId.equals(commentAuthorId)) {
+            throw new CustomException(ErrorCode.AUTHORITY_ACCESS);
+        }
+    }
+
+
 }

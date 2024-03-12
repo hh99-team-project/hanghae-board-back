@@ -1,6 +1,8 @@
 package com.sparta.hanghaeboard.domain.comment.dto;
 
 import com.sparta.hanghaeboard.domain.comment.entity.Comment;
+import com.sparta.hanghaeboard.domain.post.entity.Post;
+import com.sparta.hanghaeboard.domain.user.entity.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,8 +17,10 @@ public class CommentRequestDto {
     @NotNull
     private String comment; // 댓글 내용
 
-    public Comment toEntity() {
+    public Comment toEntity(User user, Post post) {
         return Comment.builder()
+                .user(user)
+                .post(post)
                 .comment(this.comment)
                 .build();
     }
