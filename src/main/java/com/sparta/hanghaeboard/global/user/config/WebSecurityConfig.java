@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
@@ -94,7 +95,8 @@ public class WebSecurityConfig {
         http.formLogin(AbstractHttpConfigurer::disable);
 
         // 필터 관리
-        http.cors(Customizer.withDefaults()); // Bean에 등록된 corsfilter 또는 corsconfigure을 찾아서 사용한다
+//        http.cors(Customizer.withDefaults()); // Bean에 등록된 corsfilter 또는 corsconfigure을 찾아서 사용한다
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource())); // Bean에 등록된 corsfilter 또는 corsconfigure을 찾아서 사용한다
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
@@ -111,4 +113,18 @@ public class WebSecurityConfig {
 //        source.registerCorsConfiguration("/**", config);
 //        return new CorsFilter(source);
 //    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.addAllowedOrigin("*");
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 }
