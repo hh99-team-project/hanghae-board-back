@@ -1,5 +1,7 @@
 package com.sparta.hanghaeboard.global.user.security;
 
+import com.sparta.hanghaeboard.global.common.exception.CustomException;
+import com.sparta.hanghaeboard.global.common.exception.ErrorCode;
 import com.sparta.hanghaeboard.global.user.jwt.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -50,7 +52,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 return;
             }
         }
-
+        else {
+            log.error("오류");
+            return;
+        }
         filterChain.doFilter(req, res);
     }
 

@@ -27,6 +27,13 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
+    static public class Builder {
+        private Long id;
+        private String password;
+        private String nickname;
+        private UserRoleEnum role;
+    }
+
     public User(SignupRequestDto signupRequestDto, String userPassword, UserRoleEnum role) {
         this.email = signupRequestDto.getEmail();
         this.password = userPassword;

@@ -3,6 +3,8 @@ package com.sparta.hanghaeboard.global.user.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.hanghaeboard.domain.user.dto.LoginRequestDto;
 import com.sparta.hanghaeboard.domain.user.entity.UserRoleEnum;
+import com.sparta.hanghaeboard.global.common.exception.CustomException;
+import com.sparta.hanghaeboard.global.common.exception.ErrorCode;
 import com.sparta.hanghaeboard.global.user.jwt.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -23,7 +25,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     public JwtAuthenticationFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
-        setFilterProcessesUrl("/api/user/login"); // POST 사용
+        setFilterProcessesUrl("/user/login"); // POST 사용
     }
 
     // 로그인 시도 처리
@@ -73,11 +75,16 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     // 로그인 실패 처리
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
         // 인증 실패 시 401 Unauthorized 상태 코드 반환
         response.setStatus(401);
-
-        // 로그인 실패 메시지를 로그에 출력
+//        response.setCharacterEncoding("utf-8"); // 한글 인식 설정
+//        response.setContentType("application/json"); // json 형식 보낸다고 알려줌
+//        response.getWriter().write("로그인 실패");
+//        response.getWriter().flush(); // 데이터 흘리기
+//        response.getWriter().close(); // 닫기
+//
+//        // 로그인 실패 메시지를 로그에 출력
         log.info("로그인 실패: {}", failed.getMessage());
     }
 }

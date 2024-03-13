@@ -40,15 +40,18 @@ public class UserService {
         }
 
         // 사용자 ROLE 확인 (권한확인)
-        UserRoleEnum role = UserRoleEnum.USER;
+//        UserRoleEnum role = UserRoleEnum.USER;
+        UserRoleEnum role;
 
-        // signupRequestDto.equals(auth) 대체 검토 (매니저 외 권한 확장 가능성 고려)
-        if (signupRequestDto.isAdmin()) {
-            if (!ADMIN_TOKEN.equals(signupRequestDto.getAdminToken())) {
-                throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
-            }
+        // adminToken에 입력된 내용이 있다면 관리자 암호와 일치 여부 확인
+        if (!ADMIN_TOKEN.equals(signupRequestDto.getAdminToken())) {
+//            throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
+            role = UserRoleEnum.USER;
+        } else {
             role = UserRoleEnum.REPORTER;
         }
+
+
 
         // 사용자 등록
         User user = new User(signupRequestDto, password, role);
@@ -63,7 +66,7 @@ public class UserService {
                 .orElseThrow(()-> new CustomException(ErrorCode.NOT_EXIST_USER));
 
         CheckResponseDto checkResponseDto = null;
-        if (user.getRole() == UserRoleEnum.REPORTER) {
+        if (user.getRole() == UserRoleEnum.REPORTER || user.getRole() == UserRoleEnum.USER) {
             checkResponseDto = new CheckResponseDto(user.getId(), user.getNickname(), user.getRole());
         }
 
