@@ -1,7 +1,9 @@
 package com.sparta.hanghaeboard.domain.user.dto;
 
 import com.sparta.hanghaeboard.domain.user.entity.UserRoleEnum;
+import lombok.Getter;
 
+@Getter
 public class CheckResponseDto {
 
     private Long id;
