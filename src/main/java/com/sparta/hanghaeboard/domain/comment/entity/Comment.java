@@ -34,6 +34,7 @@ public class Comment extends Timestamped {
     @JoinColumn(name = "user_id")
     private User user;
 
+
     // 다대일 연관관계 설정 편의 메서드
     public void setUser(User user) {
         this.user = user;
@@ -43,7 +44,7 @@ public class Comment extends Timestamped {
         this.post = post;
     }
 
-    public Comment(CommentRequestDto commentRequestDto) {
+    public void updateComment(CommentRequestDto commentRequestDto) {
         this.comment = commentRequestDto.getComment();
     }
 }

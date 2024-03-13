@@ -33,18 +33,10 @@ public class CommentService {
         // 현재 로그인된 유저를 나타내는 User 객체
         User user = userDetails.getUser();
 
-        // RequestDto -> Entity
-        // DTO에 담긴 내용으로 댓글 객체 생성
-        Comment comment = new Comment(requestDto);
-
-        // 다대일 관계의 Comment Entity의 엔티티 연관관계 설정
-        comment.setPost(post);
-        comment.setUser(user);
-
-        // Repository 저장
-        Comment saveComment = commentRepository.save(requestDto.toEntity(user, post));
+        // post, user를 매개변수로 하는 toEntity으로  Repository 저장
+        Comment comment = commentRepository.save(requestDto.toEntity(user, post));
         // Entity -> ResponseDto
-        return new CommentResponseDto(saveComment);
+        return new CommentResponseDto(comment);
     }
 
     // 선택한 강의의 댓글 수정
@@ -71,10 +63,9 @@ public class CommentService {
         // 현재 로그인된 유저와 작성자 일치 여부 확인
         validateCommentAuthor(user.getId(), commentAuthorId);
 
-        // 댓글 수정 및 저장
-        Comment savedComment = commentRepository.save(requestDto.toEntity(user, post));
+        comment.updateComment(requestDto);
 
-        return new CommentResponseDto(savedComment);
+        return new CommentResponseDto(comment);
     }
 
     // 선택한 강의의 선택한 댓글 삭제 // + 댓글 등록한 회원만 수정 가능
