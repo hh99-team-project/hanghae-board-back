@@ -1,11 +1,13 @@
 package com.sparta.hanghaeboard.domain.post.dto;
 
+import com.sparta.hanghaeboard.domain.comment.entity.Comment;
 import com.sparta.hanghaeboard.domain.post.entity.Post;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class PostResponseDto {
 
@@ -59,6 +61,7 @@ public class PostResponseDto {
         private String category;
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
+        private List<Comment> commentList;
 
         public GetPostResponseDto(Post post) {
             this.nickname = post.getUser().getNickname();
@@ -67,6 +70,7 @@ public class PostResponseDto {
             this.category = post.getCategory();
             this.createdAt = post.getCreatedAt();
             this.modifiedAt = post.getModifiedAt();
+            this.commentList = post.getCommentList();
         }
     }
 }
