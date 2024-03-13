@@ -1,5 +1,6 @@
 package com.sparta.hanghaeboard.domain.user.controller;
 
+import com.sparta.hanghaeboard.domain.user.dto.CheckResponseDto;
 import com.sparta.hanghaeboard.domain.user.dto.SignupRequestDto;
 import com.sparta.hanghaeboard.domain.user.dto.SignupResponseDto;
 import com.sparta.hanghaeboard.domain.user.service.UserService;
@@ -42,11 +43,15 @@ public class UserController {
 
     // 회원 정보 조회
     @GetMapping ("/auth")
-    public ResponseEntity<?> checkInfo (@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<Object> checkInfo (@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        userService.checkInfo(userDetails);
+        CheckResponseDto checkResponseDto = userService.checkInfo(userDetails);
 
-        return ResponseEntity.status(HttpStatus.OK).body("회원정보 입니다.");
+        if (checkResponseDto != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(checkResponseDto);
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("회원정보가 틀렸습니다.");
+
     }
 
 }
