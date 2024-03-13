@@ -33,18 +33,10 @@ public class CommentService {
         // 현재 로그인된 유저를 나타내는 User 객체
         User user = userDetails.getUser();
 
-        // RequestDto -> Entity
-        // DTO에 담긴 내용으로 댓글 객체 생성
-        Comment comment = requestDto.toEntity(user, post);
-
-//        // 다대일 관계의 Comment Entity의 엔티티 연관관계 설정
-//        comment.setPost(post);
-//        comment.setUser(user);
-
-        // Repository 저장
-        Comment saveComment = commentRepository.save(comment);
+        // post, user를 매개변수로 하는 toEntity으로  Repository 저장
+        Comment comment = commentRepository.save(requestDto.toEntity(user, post));
         // Entity -> ResponseDto
-        return new CommentResponseDto(saveComment);
+        return new CommentResponseDto(comment);
     }
 
     // 선택한 강의의 댓글 수정
