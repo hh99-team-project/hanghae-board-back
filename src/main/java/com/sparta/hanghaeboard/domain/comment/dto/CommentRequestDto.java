@@ -7,9 +7,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.antlr.v4.runtime.misc.NotNull;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Builder
 public class CommentRequestDto {
