@@ -1,11 +1,13 @@
 package com.sparta.hanghaeboard.domain.post.controller;
 
 
-
-import com.sparta.hanghaeboard.domain.post.dto.PostRequestDto.*;
-import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.*;
+import com.sparta.hanghaeboard.domain.post.dto.PostRequestDto.CreatePostRequestDto;
+import com.sparta.hanghaeboard.domain.post.dto.PostRequestDto.UpdatePostRequestDto;
+import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.CreatePostResponseDto;
+import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.GetPostListResponseDto;
+import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.GetPostResponseDto;
+import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.UpdatePostResponseDto;
 import com.sparta.hanghaeboard.domain.post.service.PostService;
-import com.sparta.hanghaeboard.domain.user.entity.User;
 import com.sparta.hanghaeboard.global.common.dto.ResponseDto;
 import com.sparta.hanghaeboard.global.user.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +53,7 @@ public class PostController {
 
     @GetMapping("/posts")
     public ResponseEntity<?> getPostList(){
-        List<GetPostResponseDto> postList = postService.getPostList();
+        List<GetPostListResponseDto> postList = postService.getPostList();
         return ResponseEntity.ok().body(ResponseDto.success("전체 게시글 조회 성공", postList));
     }
 }

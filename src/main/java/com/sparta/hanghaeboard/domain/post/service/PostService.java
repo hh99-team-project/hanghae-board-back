@@ -1,10 +1,7 @@
 package com.sparta.hanghaeboard.domain.post.service;
 
-import com.sparta.hanghaeboard.domain.post.dto.PostRequestDto.CreatePostRequestDto;
-import com.sparta.hanghaeboard.domain.post.dto.PostRequestDto.UpdatePostRequestDto;
-import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.CreatePostResponseDto;
-import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.GetPostResponseDto;
-import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.UpdatePostResponseDto;
+import com.sparta.hanghaeboard.domain.post.dto.PostRequestDto.*;
+import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.*;
 import com.sparta.hanghaeboard.domain.post.entity.Post;
 import com.sparta.hanghaeboard.domain.post.repository.PostRepository;
 import com.sparta.hanghaeboard.domain.user.entity.User;
@@ -54,7 +51,7 @@ public class PostService {
 
     @Transactional(readOnly = true)
     // 페이징 필요
-    public List<GetPostResponseDto> getPostList() {
-        return postRepository.findAll().stream().map(GetPostResponseDto::new).toList();
+    public List<GetPostListResponseDto> getPostList() {
+        return postRepository.findAll().stream().map(GetPostListResponseDto::new).toList();
     }
 }
