@@ -1,9 +1,7 @@
 package com.sparta.hanghaeboard.global.user.config;
 
 import com.sparta.hanghaeboard.global.user.jwt.JwtUtil;
-import com.sparta.hanghaeboard.global.user.security.JwtAuthenticationFilter;
-import com.sparta.hanghaeboard.global.user.security.JwtAuthorizationFilter;
-import com.sparta.hanghaeboard.global.user.security.UserDetailsServiceImpl;
+import com.sparta.hanghaeboard.global.user.security.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -29,6 +27,8 @@ public class WebSecurityConfig {
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -86,6 +86,9 @@ public class WebSecurityConfig {
         );
 
         http.formLogin(AbstractHttpConfigurer::disable);
+
+        http.exceptionHandling((e) -> e.accessDeniedHandler(customAccessDeniedHandler));
+        http.exceptionHandling((e) -> e.authenticationEntryPoint(customAuthenticationEntryPoint));
 
         // 필터 관리
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);

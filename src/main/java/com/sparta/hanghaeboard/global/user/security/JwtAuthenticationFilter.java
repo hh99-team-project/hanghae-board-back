@@ -15,6 +15,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
+import java.util.Map;
 
 //인증처리
 @Slf4j(topic = "로그인 및 JWT 생성")
@@ -73,9 +74,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     // 로그인 실패 처리
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
         // 인증 실패 시 401 Unauthorized 상태 코드 반환
-        response.setStatus(401);
+        response.setCharacterEncoding("UTF-8");
+        String responseDto = new ObjectMapper().writeValueAsString(Map.of("data", "BAD_REQUEST","message", "아이디 혹은 비밀번호를 확인해주세요.", "resultCode", HttpServletResponse.SC_BAD_REQUEST));
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        response.setContentType("application/json");
+        response.getWriter().write(responseDto);
+        response.getWriter().flush();
+        response.getWriter().close();
 
         // 로그인 실패 메시지를 로그에 출력
         log.info("로그인 실패: {}", failed.getMessage());

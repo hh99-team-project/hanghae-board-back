@@ -36,7 +36,7 @@ public class UserService {
         // email 중복확인
         Optional<User> checkEmail = userRepository.findByEmail(email);
         if (checkEmail.isPresent()) {
-            throw new IllegalArgumentException("중복된 Email 입니다.");
+            throw new CustomException(ErrorCode.DUPLICATED_EMAIL);
         }
 
         // 사용자 ROLE 확인 (권한확인)
