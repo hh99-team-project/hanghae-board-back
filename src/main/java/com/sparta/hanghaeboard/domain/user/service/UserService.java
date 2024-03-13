@@ -42,11 +42,14 @@ public class UserService {
         // 사용자 ROLE 확인 (권한확인)
         UserRoleEnum role = UserRoleEnum.USER;
 
-        // signupRequestDto.equals(auth) 대체 검토 (매니저 외 권한 확장 가능성 고려)
-        if (!ADMIN_TOKEN.equals(signupRequestDto.getAdminToken())) {
-            throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
+        // adminToken에 입력된 내용이 있다면 관리자 암호와 일치 여부 확인
+        if (!signupRequestDto.getAdminToken().isEmpty()) {
+            if (!ADMIN_TOKEN.equals(signupRequestDto.getAdminToken())) {
+                throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
+            } else {
+                role = UserRoleEnum.REPORTER;
+            }
         }
-        role = UserRoleEnum.REPORTER;
 
 
         // 사용자 등록
