@@ -36,7 +36,6 @@ public class PostService {
         return new UpdatePostResponseDto(post);
     }
 
-    @Transactional
     public void deletePost(Long postId, User user) {
         Post post = postRepository.findByIdAndUser(postId, user).orElseThrow(() ->
                 new CustomException(ErrorCode.NOT_EXIST_POST)
@@ -44,6 +43,8 @@ public class PostService {
         postRepository.delete(post);
     }
 
+    // 성능 향상을 위해, readOnly 설정
+    @Transactional(readOnly = true)
     public GetPostResponseDto getPost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() ->
                 new CustomException(ErrorCode.NOT_EXIST_POST)
@@ -51,6 +52,7 @@ public class PostService {
         return new GetPostResponseDto(post);
     }
 
+    @Transactional(readOnly = true)
     // 페이징 필요
     public List<GetPostResponseDto> getPostList() {
         return postRepository.findAll().stream().map(GetPostResponseDto::new).toList();

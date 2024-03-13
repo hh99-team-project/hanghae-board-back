@@ -10,7 +10,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -23,7 +22,7 @@ public class Post extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
+    @Column(name = "post_id")
     private Long id;
 
     private String title;
@@ -37,8 +36,8 @@ public class Post extends Timestamped {
     @JoinColumn(name = "user_id")
     private User user;
     // Comments 연결 필요
-    @OneToMany(mappedBy = "comment")
-    private List<Comment> comment = new ArrayList<>();
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<Comment> commentList;
 
     public void update(UpdatePostRequestDto requestDto) {
         this.title = requestDto.getTitle();

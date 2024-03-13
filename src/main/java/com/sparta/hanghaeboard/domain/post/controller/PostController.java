@@ -22,14 +22,12 @@ public class PostController {
 
     private final PostService postService;
 
-    // 검증 user 필요
     @PostMapping("/posts")
     public ResponseEntity<?> createPost(@RequestBody CreatePostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         CreatePostResponseDto responseDto = postService.createPost(requestDto, userDetails.getUser());
         return ResponseEntity.ok().body(ResponseDto.success("등록 성공", responseDto));
     }
 
-    // 검증 user 필요
     @PutMapping("/posts/{postId}")
     public ResponseEntity<?> updatePost(@PathVariable Long postId, @RequestBody UpdatePostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         UpdatePostResponseDto responseDto = postService.updatePost(postId, requestDto, userDetails.getUser());
@@ -48,12 +46,12 @@ public class PostController {
 
         // 댓글이랑 같이 반환하기 추가 필요.
 
-        return ResponseEntity.ok().body(ResponseDto.success("조회 성공", responseDto));
+        return ResponseEntity.ok().body(ResponseDto.success("상세 조회 성공", responseDto));
     }
 
     @GetMapping("/posts")
     public ResponseEntity<?> getPostList(){
         List<GetPostResponseDto> postList = postService.getPostList();
-        return ResponseEntity.ok().body(ResponseDto.success("조회 성공", postList));
+        return ResponseEntity.ok().body(ResponseDto.success("전체 게시글 조회 성공", postList));
     }
 }
