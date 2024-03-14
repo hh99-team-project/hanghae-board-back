@@ -8,6 +8,9 @@ import com.sparta.hanghaeboard.domain.user.entity.User;
 import com.sparta.hanghaeboard.global.common.exception.CustomException;
 import com.sparta.hanghaeboard.global.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +19,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class PostService {
+    @Autowired
     private final PostRepository postRepository;
 
     public CreatePostResponseDto createPost(CreatePostRequestDto requestDto, User user) {
@@ -53,5 +57,25 @@ public class PostService {
     // 페이징 필요
     public List<GetPostListResponseDto> getPostList() {
         return postRepository.findAll().stream().map(GetPostListResponseDto::new).toList();
+    }
+
+    // 페이징 처리 + 검색 기능 : 은미
+//    public Page<Post> searchPost(Pageable pageable) {
+//
+//        return postRepository.findAll(pageable);
+//    }
+//
+//    public Page<Post> rightSearchPost(String title, Pageable pageable) {
+//        return postRepository.findByTitleContaining(title,pageable);
+//    }
+
+
+     //buildup 해보기
+    public Page<Post> searchPost(Pageable pageable) {
+        return postRepository.findAll(pageable);
+    }
+
+    public Page<Post> titleSearchPost(String title, Pageable pageable) {
+        return postRepository.findByTitleContaining(title, pageable);
     }
 }
