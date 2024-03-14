@@ -29,6 +29,7 @@ public class User {
     private UserRoleEnum role;
 
     public User(SignupRequestDto signupRequestDto, String userPassword, UserRoleEnum role) {
+        this.id = getId();
         this.email = signupRequestDto.getEmail();
         this.password = userPassword;
         this.nickname = signupRequestDto.getNickname();
