@@ -7,6 +7,8 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 @Getter
 public class CommentResponseDto {
+
+    private Long id;
     private String nickname; // 댓글내용
     private String comment; // 댓글내용
 
@@ -17,6 +19,7 @@ public class CommentResponseDto {
     private LocalDateTime modifiedAt; // 수정일
 
     public CommentResponseDto(Comment comment) {
+        this.id = comment.getId();
         this.nickname = comment.getUser().getNickname();
         this.comment = comment.getComment();
         this.createdAt = comment.getCreatedAt();
