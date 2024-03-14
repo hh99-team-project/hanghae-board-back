@@ -2,6 +2,9 @@ package com.sparta.hanghaeboard.domain.user.dto;
 
 import com.sparta.hanghaeboard.domain.user.entity.UserRoleEnum;
 import lombok.Getter;
+import org.springframework.validation.FieldError;
+
+import java.util.List;
 
 @Getter
 public class CheckResponseDto {
@@ -17,4 +20,5 @@ public class CheckResponseDto {
         this.nickname = nickname;
         this.role = role;
     }
+
 }

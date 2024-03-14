@@ -16,6 +16,7 @@ public class PostResponseDto {
     @NoArgsConstructor
     @Getter
     public static class CreatePostResponseDto {
+        private Long id;
         private String nickname;
         private String title;
         private String contents;
@@ -23,6 +24,7 @@ public class PostResponseDto {
         private LocalDateTime createdAt;
 
         public CreatePostResponseDto(Post post) {
+            this.id = post.getId();
             this.nickname = post.getUser().getNickname();
             this.title = post.getTitle();
             this.contents = post.getContents();
@@ -35,6 +37,7 @@ public class PostResponseDto {
     @NoArgsConstructor
     @Getter
     public static class UpdatePostResponseDto {
+        private Long id;
         private String nickname;
         private String title;
         private String contents;
@@ -43,6 +46,7 @@ public class PostResponseDto {
         private LocalDateTime modifiedAt;
 
         public UpdatePostResponseDto(Post post) {
+            this.id = post.getId();
             this.nickname = post.getUser().getNickname();
             this.title = post.getTitle();
             this.contents = post.getContents();
@@ -56,6 +60,7 @@ public class PostResponseDto {
     @NoArgsConstructor
     @Getter
     public static class GetPostResponseDto {
+        private Long id;
         private String nickname;
         private String title;
         private String contents;
@@ -65,6 +70,7 @@ public class PostResponseDto {
         private List<CommentResponseDto> commentList = new ArrayList<>();
 
         public GetPostResponseDto(Post post) {
+            this.id = post.getId();
             this.nickname = post.getUser().getNickname();
             this.title = post.getTitle();
             this.contents = post.getContents();
@@ -79,6 +85,7 @@ public class PostResponseDto {
     @NoArgsConstructor
     @Getter
     public static class GetPostListResponseDto {
+        private Long id;
         private String nickname;
         private String title;
         private String contents;
@@ -87,6 +94,7 @@ public class PostResponseDto {
         private LocalDateTime modifiedAt;
 
         public GetPostListResponseDto(Post post) {
+            this.id = post.getId();
             this.nickname = post.getUser().getNickname();
             this.title = post.getTitle();
             this.contents = post.getContents();

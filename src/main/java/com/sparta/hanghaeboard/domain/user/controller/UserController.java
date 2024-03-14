@@ -37,8 +37,9 @@ public class UserController {
             }
             return ResponseEntity.badRequest().body("회원가입 요청이 잘못되었습니다.");
         }
-        userService.signup(signupRequestDto);
-        return ResponseEntity.status(HttpStatus.OK).body("회원가입을 성공했습니다.");
+//        userService.signup(signupRequestDto);
+        SignupResponseDto signupResponseDto = userService.signup(signupRequestDto);
+        return ResponseEntity.status(HttpStatus.OK).body(signupResponseDto);
     }
 
     // 회원 정보 조회
