@@ -3,29 +3,41 @@ package com.sparta.hanghaeboard.global.user.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.hanghaeboard.domain.user.dto.LoginRequestDto;
 import com.sparta.hanghaeboard.domain.user.entity.UserRoleEnum;
+
 import com.sparta.hanghaeboard.global.common.exception.CustomException;
 import com.sparta.hanghaeboard.global.common.exception.ErrorCode;
+
+import com.sparta.hanghaeboard.domain.user.service.UserService;
+
 import com.sparta.hanghaeboard.global.user.jwt.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
+import java.util.Map;
 
 //인증처리
 @Slf4j(topic = "로그인 및 JWT 생성")
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final JwtUtil jwtUtil;
+//    private final UserService userService;
 
     public JwtAuthenticationFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
-        setFilterProcessesUrl("/user/login"); // POST 사용
+
+//        this.userService = userService;
+        setFilterProcessesUrl("/api/user/login"); // POST 사용
+
     }
 
     // 로그인 시도 처리
@@ -73,18 +85,56 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     }
 
+
+
     // 로그인 실패 처리
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
         // 인증 실패 시 401 Unauthorized 상태 코드 반환
-        response.setStatus(401);
-//        response.setCharacterEncoding("utf-8"); // 한글 인식 설정
-//        response.setContentType("application/json"); // json 형식 보낸다고 알려줌
-//        response.getWriter().write("로그인 실패");
-//        response.getWriter().flush(); // 데이터 흘리기
-//        response.getWriter().close(); // 닫기
-//
-//        // 로그인 실패 메시지를 로그에 출력
+
+        response.setCharacterEncoding("UTF-8");
+        String message;
+        int resultCode;
+
+        if (failed instanceof UsernameNotFoundException) {
+            // 비밀번호가 잘못된 경우
+            message = "이메일를 확인해주세요.";
+            resultCode = HttpServletResponse.SC_BAD_REQUEST;
+        } else if (failed instanceof BadCredentialsException) {
+            // 이메일이 잘못된 경우 또는 계정이 잠겨있는 경우
+            message = "비밀번호을 확인해주세요.";
+            resultCode = HttpServletResponse.SC_BAD_REQUEST;
+        } else {
+            // 기타 인증 실패 경우
+            message = "인증에 실패했습니다.";
+            resultCode = HttpServletResponse.SC_BAD_REQUEST;
+        }
+
+
+
+//        if (failed instanceof BadCredentialsException) {
+//            // 비밀번호가 잘못된 경우
+//            message = "비밀번호를 확인해주세요.";
+//            resultCode = HttpServletResponse.SC_BAD_REQUEST;
+//        } else if (failed instanceof UsernameNotFoundException) {
+//            // 이메일이 잘못된 경우 또는 계정이 잠겨있는 경우
+//            message = "이메일을 확인해주세요.";
+//            resultCode = HttpServletResponse.SC_BAD_REQUEST;
+//        } else {
+//            // 기타 인증 실패 경우
+//            message = "인증에 실패했습니다.";
+//            resultCode = HttpServletResponse.SC_BAD_REQUEST;
+//        }
+
+//        String responseDto = new ObjectMapper().writeValueAsString(Map.of("data", "BAD_REQUEST","message", "아이디 혹은 비밀번호를 확인해주세요.", "resultCode", HttpServletResponse.SC_BAD_REQUEST));
+        String responseDto = new ObjectMapper().writeValueAsString(Map.of("data", "BAD_REQUEST","message", message, "resultCode", resultCode));
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        response.setContentType("application/json");
+        response.getWriter().write(responseDto);
+        response.getWriter().flush();
+        response.getWriter().close();
+
+        // 로그인 실패 메시지를 로그에 출력
         log.info("로그인 실패: {}", failed.getMessage());
     }
 }
