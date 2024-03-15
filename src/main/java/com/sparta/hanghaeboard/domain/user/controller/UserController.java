@@ -5,12 +5,18 @@ import com.sparta.hanghaeboard.domain.user.dto.SignupRequestDto;
 import com.sparta.hanghaeboard.domain.user.dto.SignupResponseDto;
 import com.sparta.hanghaeboard.domain.user.service.UserService;
 import com.sparta.hanghaeboard.global.user.security.UserDetailsImpl;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -54,5 +60,11 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("회원정보가 틀렸습니다.");
 
     }
-//
+
+    @GetMapping("/logout")
+    public String logout (HttpServletRequest request, HttpServletResponse response) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        new SecurityContextLogoutHandler().logout(request, response, authentication);
+        return "로그아웃 되었습니다.";
+    }
 }

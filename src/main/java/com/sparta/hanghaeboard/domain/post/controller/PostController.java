@@ -13,17 +13,16 @@ import com.sparta.hanghaeboard.global.common.dto.ResponseDto;
 import com.sparta.hanghaeboard.global.user.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -118,13 +117,15 @@ public class PostController {
 
     @GetMapping ("/posts/search")
     public ResponseEntity<?> searchPost (
-//            @RequestParam (value = "title", required = false) String title, // 이게 왜 안되는지 체크
-            @RequestParam(required = false) String title,
+            @RequestParam (value = "title", required = false) String title,
+            @RequestParam (value = "contents", required = false) String contents,// 이게 왜 안되는지 체크
+//            @RequestParam(required = false) String title,
             @RequestParam(required = false, defaultValue = "1")int num) {
 
-        int pageNumber = num - 1; // 페이지 번호는 사용자 입력과 동일하게 설정
+        int pageNumber = Math.max(num - 1, 0); // 페이지 번호는 사용자 입력과 동일하게 설정
         int pageSize = 10; // 페이지당 표시할 데이터의 개수
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "id"));
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "createdAt"));
 
         Page<Post> postsPage;
         if (title == null || title.isEmpty()) {
@@ -133,7 +134,13 @@ public class PostController {
             postsPage = postService.titleSearchPost(title, pageable);
         }
 
-        return ResponseEntity.ok().body(ResponseDto.success("검색 성공", postsPage));
+        // 페이지 정보를 제거한 뒤 응답 반환
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("resultCode", "SUCCESS");
+        responseBody.put("message", "검색 성공");
+        responseBody.put("data", postsPage.getContent()); // 페이지 내용만 반환
+
+        return ResponseEntity.ok().body(ResponseDto.success("검색 성공", responseBody));
     }
 
 
