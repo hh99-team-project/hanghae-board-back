@@ -37,6 +37,9 @@ public class Post extends Timestamped {
     // Comments 연결 필요
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> commentList;
+    // image 연결
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<PostImage> postImageList;
 
     public void update(UpdatePostRequestDto requestDto) {
         this.title = requestDto.getTitle();
