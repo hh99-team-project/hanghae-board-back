@@ -85,6 +85,9 @@ public class PostService {
         Post post = postRepository.findByIdAndUser(postId, user).orElseThrow(() ->
                 new CustomException(ErrorCode.NOT_EXIST_POST)
         );
+        if (post.getPostImageList().get(0).getId() != requestDto.getImgId()) {
+            throw new CustomException(ErrorCode.NOT_YOUR_IMG);
+        }
 
         // 이미지 삭제
         PostImage deletePostImage = postImageRepository.findById(requestDto.getImgId()).orElseThrow(
