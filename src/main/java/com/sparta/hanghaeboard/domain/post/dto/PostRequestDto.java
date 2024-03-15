@@ -6,6 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PostRequestDto {
 
@@ -43,11 +47,14 @@ public class PostRequestDto {
 
         private String category;
 
-        public Post toEntity() {
+        private Long imgId;
+
+        public Post toEntity(User user) {
             return Post.builder()
                     .title(this.title)
                     .contents(this.contents)
                     .category(this.category)
+                    .user(user)
                     .build();
         }
     }
