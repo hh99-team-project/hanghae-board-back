@@ -56,6 +56,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // 인증 결과에서 사용자 정보와 권한(Role) 추출
         String email = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
         UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
+        Long userId = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getId(); // userId 추출
+
         // JWT 토큰 생성
         String token = jwtUtil.createToken(email, role);
         // HTTP 응답 헤더에 JWT 토큰 추가
@@ -68,7 +70,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setCharacterEncoding("UTF-8");
 
         // void 일때 반환되는 값을 쓰고 싶을때 사용 (throws IOException, ServletException도 위에 기재해야한다)
-        response.getWriter().write("로그인을 완료했습니다.");
+        String responseBody = "로그인을 완료했습니다. 사용자 아이디: " + userId;
+        response.getWriter().write(responseBody);
 
     }
 
