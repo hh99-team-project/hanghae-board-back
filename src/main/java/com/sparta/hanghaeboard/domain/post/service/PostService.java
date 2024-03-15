@@ -76,6 +76,12 @@ public class PostService {
     }
 
     public Page<Post> titleSearchPost(String title, Pageable pageable) {
+
+        Page<Post> postsPage;
+        if (title == null || title.isEmpty()){
+
+        }
+
         return postRepository.findByTitleContaining(title, pageable);
     }
 }

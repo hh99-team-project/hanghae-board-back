@@ -127,6 +127,8 @@ public class PostController {
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "createdAt"));
 
+
+
         Page<Post> postsPage;
         if (title == null || title.isEmpty()) {
             postsPage = postService.searchPost(pageable);
@@ -134,11 +136,25 @@ public class PostController {
             postsPage = postService.titleSearchPost(title, pageable);
         }
 
-        // 페이지 정보를 제거한 뒤 응답 반환
+        // 현재 페이지 및 페이지 범위 계산
+        int nowPage = postsPage.getPageable().getPageNumber() + 1; // 0부터 시작하므로 +1
+        int startPage = Math.max(nowPage - 4, 1); // 현재 페이지 기준으로 시작 페이지 설정
+        int endPage = Math.min(nowPage + 5, postsPage.getTotalPages()); // 현재 페이지 기준으로 끝 페이지 설정
+
+        // 이전 페이지 및 다음 페이지의 존재 여부 계산
+        boolean hasNext = postsPage.hasNext();
+        boolean hasPrev = postsPage.hasPrevious();
+
+        // 응답으로 반환할 데이터를 Map에 담음
         Map<String, Object> responseBody = new HashMap<>();
-        responseBody.put("resultCode", "SUCCESS");
-        responseBody.put("message", "검색 성공");
-        responseBody.put("data", postsPage.getContent()); // 페이지 내용만 반환
+        responseBody.put("resultCode", "SUCCESS"); // 결과 코드 설정
+        responseBody.put("message", "검색 성공"); // 메시지 설정
+        responseBody.put("data", postsPage.getContent()); // 현재 페이지의 포스트 리스트
+        responseBody.put("nowPage", nowPage); // 현재 페이지 번호
+        responseBody.put("startPage", startPage); // 시작 페이지 번호
+        responseBody.put("endPage", endPage); // 끝 페이지 번호
+        responseBody.put("hasNext", hasNext); // 다음 페이지 존재 여부
+        responseBody.put("hasPrev", hasPrev); // 이전 페이지 존재 여부
 
         return ResponseEntity.ok().body(ResponseDto.success("검색 성공", responseBody));
     }
