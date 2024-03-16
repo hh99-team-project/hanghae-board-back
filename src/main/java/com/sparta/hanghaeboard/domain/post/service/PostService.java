@@ -165,18 +165,14 @@ public class PostService {
 //    }
 
 
-     //buildup 해보기
-    public Page<Post> searchPost(Pageable pageable) {
-        return postRepository.findAll(pageable);
+    //buildup 해보기
+    public Page<GetPostListResponseDto> searchPost(Pageable pageable) {
+        Page<Post> postPage = postRepository.findAll(pageable);
+        return postPage.map(GetPostListResponseDto::new);
     }
 
-    public Page<Post> titleSearchPost(String title, Pageable pageable) {
-
-        Page<Post> postsPage;
-        if (title == null || title.isEmpty()){
-
-        }
-
-        return postRepository.findByTitleContaining(title, pageable);
+    public Page<GetPostListResponseDto> titleSearchPost(String title, Pageable pageable) {
+        Page<Post> postPage = postRepository.findByTitleContaining(title, pageable);
+        return postPage.map(GetPostListResponseDto::new);
     }
 }

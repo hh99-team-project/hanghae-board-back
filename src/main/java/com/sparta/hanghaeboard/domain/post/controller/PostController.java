@@ -146,7 +146,7 @@ public class PostController {
 
 
 
-        Page<Post> postsPage;
+        Page<GetPostListResponseDto> postsPage;
         if (title == null || title.isEmpty()) {
             postsPage = postService.searchPost(pageable);
         } else {
