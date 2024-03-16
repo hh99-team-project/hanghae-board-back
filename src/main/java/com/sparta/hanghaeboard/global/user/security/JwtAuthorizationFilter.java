@@ -36,8 +36,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         if (StringUtils.hasText(tokenValue)) {
 
-            if (!jwtUtil.validateToken(tokenValue)) {
-                log.error("Token Error");
+            if (!jwtUtil.validateToken(tokenValue, res)) {
                 return;
             }
 
@@ -50,8 +49,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 return;
             }
         }
-
         filterChain.doFilter(req, res);
+    }
+
+    private void sendErrorResponse(HttpServletResponse res, int statusCode, String errorMessage) throws IOException {
+        res.setCharacterEncoding("utf-8");
+        res.setStatus(statusCode);
+        res.getWriter().write(errorMessage);
+        res.getWriter().flush();
     }
 
     // 인증 처리
