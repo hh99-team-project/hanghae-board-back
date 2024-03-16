@@ -31,6 +31,9 @@ public class Post extends Timestamped {
     @Enumerated(EnumType.STRING)
     private PostCategory category;
 
+    @Column (columnDefinition = "integer default 0", nullable = false)
+    private int hit;
+
     // 연결 필요
     @ManyToOne
     @JoinColumn(name = "user_id")
