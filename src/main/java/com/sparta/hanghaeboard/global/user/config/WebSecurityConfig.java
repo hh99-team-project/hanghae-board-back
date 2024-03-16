@@ -1,5 +1,6 @@
 package com.sparta.hanghaeboard.global.user.config;
 
+import com.sparta.hanghaeboard.domain.user.repository.UserRepository;
 import com.sparta.hanghaeboard.global.user.jwt.JwtUtil;
 import com.sparta.hanghaeboard.global.user.security.*;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ public class WebSecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

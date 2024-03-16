@@ -18,14 +18,14 @@ public class CustomExceptionHandler {
         return ResponseEntity.status(e.getHttpStatus()).body(ResponseDto.error(e.getKey(),e.getMessage(),e.getHttpStatus()));
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleSQLException(BindingResult bindingResult) {
-        Map<String, String> errors = new HashMap<>();
-        bindingResult.getAllErrors().forEach(e -> errors.put(((FieldError)e).getField() , e.getDefaultMessage()));
-        return ResponseEntity.badRequest().body(
-                new ResponseDto<>(ErrorCode.VALIDATION_ERROR.getKey(),
-                                ErrorCode.VALIDATION_ERROR.getMessage(),
-                                errors)
-        );
-    }
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    public ResponseEntity<?> handleSQLException(BindingResult bindingResult) {
+//        Map<String, String> errors = new HashMap<>();
+//        bindingResult.getAllErrors().forEach(e -> errors.put(((FieldError)e).getField() , e.getDefaultMessage()));
+//        return ResponseEntity.badRequest().body(
+//                new ResponseDto<>(ErrorCode.VALIDATION_ERROR.getKey(),
+//                                ErrorCode.VALIDATION_ERROR.getMessage(),
+//                                errors)
+//        );
+//    }
 }
