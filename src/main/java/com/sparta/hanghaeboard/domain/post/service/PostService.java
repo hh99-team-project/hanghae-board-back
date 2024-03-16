@@ -154,18 +154,7 @@ public class PostService {
         return postRepository.findAll().stream().map(GetPostListResponseDto::new).toList();
     }
 
-    // 페이징 처리 + 검색 기능 : 은미
-//    public Page<Post> searchPost(Pageable pageable) {
-//
-//        return postRepository.findAll(pageable);
-//    }
-//
-//    public Page<Post> rightSearchPost(String title, Pageable pageable) {
-//        return postRepository.findByTitleContaining(title,pageable);
-//    }
-
-
-    //buildup 해보기
+    // 검색
     public Page<GetPostListResponseDto> searchPost(Pageable pageable) {
         Page<Post> postPage = postRepository.findAll(pageable);
         return postPage.map(GetPostListResponseDto::new);
@@ -182,5 +171,11 @@ public class PostService {
         List<Post> postByCategoryList = postRepository.findAllByCategory(category).orElseThrow(()->
                 new CustomException(ErrorCode.NOT_EXIST_POST));
         return postByCategoryList.stream().map(GetPostListResponseDto::new).toList();
+    }
+
+    // hit 수
+    @Transactional
+    public int updateHit (Long id) {
+        return postRepository.updateHit(id);
     }
 }

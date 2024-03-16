@@ -82,56 +82,7 @@ public class PostController {
         return ResponseEntity.ok().body(ResponseDto.success("전체 게시글 조회 성공", postList));
     }
 
-    // 페이징 처리 + 검색 기능 : 은미
-//    @GetMapping ("/posts/search")
-//    public String searchPost (Model model,
-//                              @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
-//                              String title) { // model : 데이터를 받아서 우리가 보는 페이지로 넘겨줄때 사용
-//
-//        Page<Post> list = null;
-//
-//        if (title == null) {
-//            list = postService.searchPost(pageable);
-//        } else {
-//            list = postService.rightSearchPost(title, pageable);
-//
-//        }
-//
-//        int nowPage = list.getPageable().getPageNumber() +1;
-//        int startPage = Math.max(nowPage -4, 1);
-//        int endPage = Math.min(nowPage +5, list.getTotalPages());
-//
-//        model.addAttribute("search", list);// search라는 이름으로 보낸다, 뒤에 있는 것을
-//        model.addAttribute("nowPage",nowPage);
-//        model.addAttribute("startPage", startPage);
-//        model.addAttribute("endPage", endPage);
-//
-//        return "searchPost";
-//    }
-
-
-//    // 성공함. 그러나 더 build up 해보기
-//    @GetMapping("/posts/search")
-//    public ResponseEntity<?> searchPost(
-////            @RequestParam(defaultValue = "0") int page,
-////            @RequestParam(defaultValue = "10") int size,
-//            @RequestParam(required = false) String title) {
-//
-//        int page = 0;
-//        int size = 10;
-//
-//        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
-//        Page<Post> postsPage;
-//
-//        if (title == null || title.isEmpty()) {
-//            postsPage = postService.searchPost(pageable);
-//        } else {
-//            postsPage = postService.rightSearchPost(title, pageable);
-//        }
-//
-//        return ResponseEntity.ok(postsPage);
-//    }
-
+    // 검색
     @GetMapping ("/posts/search")
     public ResponseEntity<?> searchPost (
             @RequestParam (value = "title", required = false) String title,
@@ -176,13 +127,17 @@ public class PostController {
         return ResponseEntity.ok().body(ResponseDto.success("검색 성공", responseBody));
     }
 
-
-
     @GetMapping("/posts/category/{category}")
     public ResponseEntity<?> getPostByCategoryList(@PathVariable String category) {
         List<GetPostListResponseDto> postList = postService.getPostByCategoryList(category);
         return ResponseEntity.ok().body(ResponseDto.success("전체 게시글 조회 성공", postList));
     }
 
+    // hit
+    @GetMapping("/posts/read/{id}")
+    public String readHit (@PathVariable Long id) {
+        postService.updateHit(id); // views++
+        return "success";
+    }
 
 }
