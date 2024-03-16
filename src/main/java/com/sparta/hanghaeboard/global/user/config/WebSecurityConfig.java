@@ -98,7 +98,9 @@ public class WebSecurityConfig {
 
         // 필터 관리
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
+        // 인증과 권한 검색해서 넣으면 된다.
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+//        http.exceptionHandling() // ()안에 재정의 해서 넣어주면 된다
 
         return http.build();
     }

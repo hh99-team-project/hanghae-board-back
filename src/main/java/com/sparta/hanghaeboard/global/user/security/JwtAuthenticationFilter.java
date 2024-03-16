@@ -8,6 +8,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,6 +17,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.io.IOException;
 import java.util.Map;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 //인증처리
 @Slf4j(topic = "로그인 및 JWT 생성")
@@ -76,6 +80,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     // 로그인 실패 처리
+    @SneakyThrows
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
         // 인증 실패 시 401 Unauthorized 상태 코드 반환
@@ -89,5 +94,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         // 로그인 실패 메시지를 로그에 출력
         log.info("로그인 실패: {}", failed.getMessage());
+
+//        // 포스트맨으로 "로그인을 실패했습니다" 메시지 보내기
+//        response.getWriter().write("로그인을 실패했습니다");
+//        response.getWriter().flush();
+//        //utf8 인코딩을 하면 ??? 없어진다.
+////        response.encoding?
     }
 }
