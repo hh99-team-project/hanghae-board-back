@@ -23,7 +23,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -39,15 +41,18 @@ public class UserController {
     @PostMapping("/user/signup")
     // ResponseEntity : HTTP 응답을 나타내는 클래스입니다. HTTP 응답의 상태 코드, 헤더 및 본문(body)을 포함합니다.
     public ResponseEntity<?> signup(@Valid @RequestBody SignupRequestDto signupRequestDto, BindingResult bindingResult) {
-        // Validation 예외처리
-        List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-        if (!fieldErrors.isEmpty()) {
+
+        // Validation 예외처리. 유효성 검사 실패시
+        if (bindingResult.hasErrors()) {
+            // 검사 실패한 필드 에러들을 가져와서 클라이언트에게 반환
+            Map<String, String> errors = new HashMap<>();
             for (FieldError fieldError : bindingResult.getFieldErrors()) {
-                log.error(fieldError.getField() + " 필드 : " + fieldError.getDefaultMessage());
+                errors.put(fieldError.getField(), fieldError.getDefaultMessage());
             }
-            return ResponseEntity.badRequest().body("회원가입 요청이 잘못되었습니다.");
+            return ResponseEntity.badRequest().body(errors);
         }
-        userService.signup(signupRequestDto);
+
+        // 유효성 검사를 통과한 경우에는 서비스로 전달하여 처리
         SignupResponseDto signupResponseDto = userService.signup(signupRequestDto);
         return ResponseEntity.status(HttpStatus.OK).body(signupResponseDto);
     }
@@ -65,6 +70,7 @@ public class UserController {
 
     }
 
+    // 블랙리스트
     @GetMapping("/logout")
     public ResponseEntity<String> logout (HttpServletRequest request, HttpServletResponse response) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -81,6 +87,7 @@ public class UserController {
         return ResponseEntity.ok("로그아웃 되었습니다.");
     }
 
+    // 블랙리스트
     @GetMapping("/checkToken")
     public ResponseEntity<String> checkToken(HttpServletRequest request) {
         // 요청 헤더에서 토큰 추출
