@@ -175,4 +175,12 @@ public class PostService {
         Page<Post> postPage = postRepository.findByTitleContaining(title, pageable);
         return postPage.map(GetPostListResponseDto::new);
     }
+
+    @Transactional(readOnly = true)
+    // 페이징 필요
+    public List<GetPostListResponseDto> getPostByCategoryList(String category) {
+        List<Post> postByCategoryList = postRepository.findAllByCategory(category).orElseThrow(()->
+                new CustomException(ErrorCode.NOT_EXIST_POST));
+        return postByCategoryList.stream().map(GetPostListResponseDto::new).toList();
+    }
 }

@@ -31,7 +31,6 @@ public class UserService {
         String email = signupRequestDto.getEmail();  // requestDto 에서 getUsername 가져와 변수 username 에 담음.
         String password = passwordEncoder.encode(signupRequestDto.getPassword());  // 평문을 암호화 해서 password 에 담음.
 
-
         // email 중복확인
         Optional<User> checkEmail = userRepository.findByEmail(email);
         if (checkEmail.isPresent()) {
@@ -43,12 +42,10 @@ public class UserService {
 
         // adminToken에 입력된 내용이 있다면 관리자 암호와 일치 여부 확인
         if (!ADMIN_TOKEN.equals(signupRequestDto.getAdminToken())) {
-//            throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
             role = UserRoleEnum.USER;
         } else {
             role = UserRoleEnum.REPORTER;
         }
-
 
         // 사용자 등록
         User user = new User(signupRequestDto, password, role);
