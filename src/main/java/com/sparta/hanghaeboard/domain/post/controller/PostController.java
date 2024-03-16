@@ -177,4 +177,12 @@ public class PostController {
     }
 
 
+
+    @GetMapping("/posts/category/{category}")
+    public ResponseEntity<?> getPostByCategoryList(@PathVariable String category) {
+        List<GetPostListResponseDto> postList = postService.getPostByCategoryList(category);
+        return ResponseEntity.ok().body(ResponseDto.success("전체 게시글 조회 성공", postList));
+    }
+
+
 }
