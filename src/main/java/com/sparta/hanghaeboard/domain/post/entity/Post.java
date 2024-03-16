@@ -30,7 +30,7 @@ public class Post extends Timestamped {
 
     private String category;
 
-    @Column(columnDefinition = "integer default 0", nullable = false)
+    @Column (columnDefinition = "integer default 0", nullable = false)
     private int hit;
 
     // 연결 필요

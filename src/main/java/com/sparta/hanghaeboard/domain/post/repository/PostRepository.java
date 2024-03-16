@@ -20,6 +20,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Optional<List<Post>> findAllByCategory(String category);
 
     @Modifying
-    @Query("update Post p set p.hit = p.hit + 1 where p.id = :id")
-    int updateHit(Long id);
+    @Query ("update Post p set p.hit = p.hit + 1 where p.id = :id")
+    int updateHit (Long id);
+
 }

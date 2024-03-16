@@ -173,9 +173,10 @@ public class PostService {
         return postByCategoryList.stream().map(GetPostListResponseDto::new).toList();
     }
 
-    // hit 수
+    // hit 인기수
     @Transactional
     public int updateHit (Long id) {
         return postRepository.updateHit(id);
     }
+
 }

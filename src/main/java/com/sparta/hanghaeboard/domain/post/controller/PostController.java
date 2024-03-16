@@ -72,6 +72,7 @@ public class PostController {
     @GetMapping("/posts/{postId}")
     public ResponseEntity<?> getPost(@PathVariable Long postId) {
         GetPostResponseDto responseDto = postService.getPost(postId);
+        postService.updateHit(postId); // views++
         return ResponseEntity.ok().body(ResponseDto.success("상세 조회 성공", responseDto));
     }
 
@@ -134,7 +135,7 @@ public class PostController {
     }
 
     // hit
-    @GetMapping("/posts/read/{id}")
+    @GetMapping ("/posts/hit/{id}")
     public String readHit (@PathVariable Long id) {
         postService.updateHit(id); // views++
         return "success";
