@@ -11,6 +11,9 @@ import com.sparta.hanghaeboard.global.aws.service.S3UploadService;
 import com.sparta.hanghaeboard.global.common.exception.CustomException;
 import com.sparta.hanghaeboard.global.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +26,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class PostService {
+    @Autowired
     private final PostRepository postRepository;
     private final S3UploadService s3UploadService;
     private final PostImageRepository postImageRepository;
@@ -148,5 +152,31 @@ public class PostService {
     // 페이징 필요
     public List<GetPostListResponseDto> getPostList() {
         return postRepository.findAll().stream().map(GetPostListResponseDto::new).toList();
+    }
+
+    // 페이징 처리 + 검색 기능 : 은미
+//    public Page<Post> searchPost(Pageable pageable) {
+//
+//        return postRepository.findAll(pageable);
+//    }
+//
+//    public Page<Post> rightSearchPost(String title, Pageable pageable) {
+//        return postRepository.findByTitleContaining(title,pageable);
+//    }
+
+
+     //buildup 해보기
+    public Page<Post> searchPost(Pageable pageable) {
+        return postRepository.findAll(pageable);
+    }
+
+    public Page<Post> titleSearchPost(String title, Pageable pageable) {
+
+        Page<Post> postsPage;
+        if (title == null || title.isEmpty()){
+
+        }
+
+        return postRepository.findByTitleContaining(title, pageable);
     }
 }
