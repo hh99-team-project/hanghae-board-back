@@ -61,9 +61,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String email = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
         UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
         Long userId = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getId(); // userId 추출
+        String nickname = (((UserDetailsImpl) authResult.getPrincipal()).getUser().getNickname());
 
         // JWT 토큰 생성
         String token = jwtUtil.createToken(email, role);
+
         // HTTP 응답 헤더에 JWT 토큰 추가
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
 
@@ -74,7 +76,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setCharacterEncoding("UTF-8");
 
         // void 일때 반환되는 값을 쓰고 싶을때 사용 (throws IOException, ServletException도 위에 기재해야한다)
-        String responseBody = "로그인을 완료했습니다. 사용자 아이디: " + userId;
+        String responseBody = "로그인을 완료했습니다. " + "\n"
+                                + "사용자 아이디: " + userId + "\n"
+                                + "사용자 email: " + email + "\n"
+                                + "사용자 nickname: " + nickname + "\n"
+                                + "사용자 role: " + role;
         response.getWriter().write(responseBody);
 
     }
@@ -94,5 +100,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         // 로그인 실패 메시지를 로그에 출력
         log.info("로그인 실패: {}", failed.getMessage());
+
+//        // 포스트맨으로 "로그인을 실패했습니다" 메시지 보내기
+//        response.getWriter().write("로그인을 실패했습니다");
+//        response.getWriter().flush();
+//        //utf8 인코딩을 하면 ??? 없어진다.
+////        response.encoding?
     }
 }

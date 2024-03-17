@@ -7,21 +7,23 @@ import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.CreatePostRespons
 import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.GetPostListResponseDto;
 import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.GetPostResponseDto;
 import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.UpdatePostResponseDto;
+import com.sparta.hanghaeboard.domain.post.entity.Post;
 import com.sparta.hanghaeboard.domain.post.service.PostService;
 import com.sparta.hanghaeboard.global.common.dto.ResponseDto;
 import com.sparta.hanghaeboard.global.user.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -74,7 +76,7 @@ public class PostController {
     @GetMapping("/posts/{postId}")
     public ResponseEntity<?> getPost(@PathVariable Long postId) {
         GetPostResponseDto responseDto = postService.getPost(postId);
-        postService.updateHit(postId); // views++
+        postService.updateHit(postId); // hit
         return ResponseEntity.ok().body(ResponseDto.success("상세 조회 성공", responseDto));
     }
 
@@ -98,7 +100,6 @@ public class PostController {
     @GetMapping ("/posts/search")
     public ResponseEntity<?> searchPost (
             @RequestParam (value = "title", required = false) String title,
-            @RequestParam (value = "contents", required = false) String contents,// 이게 왜 안되는지 체크
 //            @RequestParam(required = false) String title,
             @RequestParam(required = false, defaultValue = "1")int num) {
 
