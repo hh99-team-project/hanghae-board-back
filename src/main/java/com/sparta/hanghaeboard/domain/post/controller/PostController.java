@@ -74,7 +74,7 @@ public class PostController {
     @GetMapping("/posts/{postId}")
     public ResponseEntity<?> getPost(@PathVariable Long postId) {
         GetPostResponseDto responseDto = postService.getPost(postId);
-        postService.updateHit(postId); // views++
+        postService.updateHit(postId); // hit
         return ResponseEntity.ok().body(ResponseDto.success("상세 조회 성공", responseDto));
     }
 
@@ -98,7 +98,6 @@ public class PostController {
     @GetMapping ("/posts/search")
     public ResponseEntity<?> searchPost (
             @RequestParam (value = "title", required = false) String title,
-            @RequestParam (value = "contents", required = false) String contents,// 이게 왜 안되는지 체크
 //            @RequestParam(required = false) String title,
             @RequestParam(required = false, defaultValue = "1")int num) {
 
@@ -106,8 +105,6 @@ public class PostController {
         int pageSize = 10; // 페이지당 표시할 데이터의 개수
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "createdAt"));
-
-
 
         Page<GetPostListResponseDto> postsPage;
         if (title == null || title.isEmpty()) {
