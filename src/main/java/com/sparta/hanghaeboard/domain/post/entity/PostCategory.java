@@ -17,10 +17,10 @@ public enum PostCategory {
     }
 
     public static class Category {
-        public static final String SOCIETY = "사회";
-        public static final String CULTURE = "문화";
-        public static final String SPORTS = "스포츠";
-        public static final String ENTERTAINMENT = "연예";
+        public static final String SOCIETY = "SOCIETY";
+        public static final String CULTURE = "CULTURE";
+        public static final String SPORTS = "SPORTS";
+        public static final String ENTERTAINMENT = "ENTERTAINMENT";
         public static final String IT = "IT";
     }
 }

@@ -7,23 +7,21 @@ import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.CreatePostRespons
 import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.GetPostListResponseDto;
 import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.GetPostResponseDto;
 import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.UpdatePostResponseDto;
-import com.sparta.hanghaeboard.domain.post.entity.Post;
 import com.sparta.hanghaeboard.domain.post.service.PostService;
 import com.sparta.hanghaeboard.global.common.dto.ResponseDto;
 import com.sparta.hanghaeboard.global.user.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
-import org.springframework.data.web.PageableDefault;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,7 +40,8 @@ public class PostController {
     @Autowired
     private final PostService postService;
 
-    @Operation(summary = "게시글 등록", description = "게시글 등록: title, contents, category, file")
+    @Operation(summary = "게시글 등록",
+            description = "게시글 등록: title, contents, category, file")
     @PostMapping(value = "/posts", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> createPost(@RequestPart(value = "files", required = false) MultipartFile[] multipartFileList,
                                         @RequestPart(value = "createPostRequestDto") CreatePostRequestDto requestDto,
@@ -51,7 +50,8 @@ public class PostController {
         return ResponseEntity.ok().body(ResponseDto.success("등록 성공", responseDto));
     }
 
-    @Operation(summary = "게시글 수정", description = "게시글 수정: title, contents, category, file")
+    @Operation(summary = "게시글 수정",
+            description = "게시글 수정: title, contents, category, file")
     @PostMapping(value = "/posts/{postId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> updateImgPost(@RequestPart(value = "files", required = false) MultipartFile[] multipartFileList,
                                            @RequestPart(value = "updatePostRequestDto") UpdatePostRequestDto requestDto,
@@ -61,14 +61,16 @@ public class PostController {
         return ResponseEntity.ok().body(ResponseDto.success("수정 성공", responseDto));
     }
 
-    @Operation(summary = "게시글 삭제", description = "유저 정보가 일치할 경우, 게시글 삭제 가능")
+    @Operation(summary = "게시글 삭제",
+            description = "유저 정보가 일치할 경우, 게시글 삭제 가능")
     @DeleteMapping("/posts/{postId}")
     public ResponseEntity<?> deletePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         postService.deletePost(postId, userDetails.getUser());
         return ResponseEntity.ok().body(ResponseDto.success("삭제가 완료되었습니다.", null));
     }
 
-    @Operation(summary = "게시글 상세 조회", description = "postId를 통한 게시글 상세 조회 - 게시글에 포함된 이미지, 댓글 포함")
+    @Operation(summary = "게시글 상세 조회",
+            description = "postId를 통한 게시글 상세 조회 - 게시글에 포함된 이미지, 댓글 포함")
     @GetMapping("/posts/{postId}")
     public ResponseEntity<?> getPost(@PathVariable Long postId) {
         GetPostResponseDto responseDto = postService.getPost(postId);
@@ -76,11 +78,20 @@ public class PostController {
         return ResponseEntity.ok().body(ResponseDto.success("상세 조회 성공", responseDto));
     }
 
-    @Operation(summary = "게시글 전체 조회", description = "전체 조회시, 글에 저장된 첫 번째 이미지 출력")
+    @Operation(summary = "게시글 hit순 조회",
+            description = "조회시, 글에 저장된 첫 번째 이미지 출력")
     @GetMapping("/posts")
-    public ResponseEntity<?> getPostList() {
-        List<GetPostListResponseDto> postList = postService.getPostList();
-        return ResponseEntity.ok().body(ResponseDto.success("전체 게시글 조회 성공", postList));
+    public ResponseEntity<?> getMainPostList() {
+        List<GetPostListResponseDto> postList = postService.getMainPostList();
+        return ResponseEntity.ok().body(ResponseDto.success("전체 게시글 hit순 조회 성공", postList));
+    }
+
+    @Operation(summary = "게시글 new, hot 조회",
+            description = "type에 new 혹은 hot 입력, 5개 반환")
+    @GetMapping("/posts/type/{type}")
+    public ResponseEntity<?> getTypePostList(@PathVariable String type) {
+        List<GetPostListResponseDto> postList = postService.getTypePostList(type);
+        return ResponseEntity.ok().body(ResponseDto.success("전체 게시글 new/hot 조회 성공", postList));
     }
 
     // 검색
@@ -128,17 +139,20 @@ public class PostController {
         return ResponseEntity.ok().body(ResponseDto.success("검색 성공", responseBody));
     }
 
+    @Operation(summary = "카테고리별 게시글 hit순 조회",
+            description = "카테고리 대소문자 상관x, hit순 7개 반환")
     @GetMapping("/posts/category/{category}")
     public ResponseEntity<?> getPostByCategoryList(@PathVariable String category) {
         List<GetPostListResponseDto> postList = postService.getPostByCategoryList(category);
-        return ResponseEntity.ok().body(ResponseDto.success("전체 게시글 조회 성공", postList));
+        return ResponseEntity.ok().body(ResponseDto.success("카테고리별 인기글 조회 성공", postList));
     }
 
-    // hit
-    @GetMapping ("/posts/hit/{id}")
-    public String readHit (@PathVariable Long id) {
-        postService.updateHit(id); // views++
-        return "success";
+    @Operation(summary = "카테고리별 게시글 new(등록일순)/hot(댓글많은 순서) 조회",
+            description = "카테고리 대소문자 상관x, type에 new 혹은 hot 입력, 5개 반환")
+    @GetMapping("/posts/category/{category}/type/{type}")
+    public ResponseEntity<?> getTypePostByCategoryList(@PathVariable String category, @PathVariable String type) {
+        List<GetPostListResponseDto> postList = postService.getTypePostByCategoryList(category, type);
+        return ResponseEntity.ok().body(ResponseDto.success("카테고리별 new/hot 게시글 조회 성공", postList));
     }
 
 }

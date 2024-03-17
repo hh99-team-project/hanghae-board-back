@@ -24,6 +24,7 @@ public class PostResponseDto {
         private String title;
         private String contents;
         private String category;
+        private int hit;
         private List<String> imageName;
         private List<String> imageUrlList;
         private List<DetailPostImageResponseDto> postImageList = new ArrayList<>();
@@ -34,7 +35,8 @@ public class PostResponseDto {
             this.nickname = post.getUser().getNickname();
             this.title = post.getTitle();
             this.contents = post.getContents();
-            this.category = post.getCategory();
+            this.category = post.getCategory().getCategory();
+            this.hit = post.getHit();
             this.createdAt = post.getCreatedAt();
 //            this.postImageList = post.getPostImageList().stream().map(DetailPostImageResponseDto::new).toList();
         }
@@ -44,7 +46,8 @@ public class PostResponseDto {
             this.nickname = post.getUser().getNickname();
             this.title = post.getTitle();
             this.contents = post.getContents();
-            this.category = post.getCategory();
+            this.category = post.getCategory().getCategory();
+            this.hit = post.getHit();
             this.createdAt = post.getCreatedAt();
             this.imageUrlList = urlList;
             this.imageName = nameList;
@@ -60,6 +63,7 @@ public class PostResponseDto {
         private String title;
         private String contents;
         private String category;
+        private int hit;
         private List<String> imageName;
         private List<String> imageUrlList;
         private List<DetailPostImageResponseDto> postImageList = new ArrayList<>();
@@ -71,7 +75,8 @@ public class PostResponseDto {
             this.nickname = post.getUser().getNickname();
             this.title = post.getTitle();
             this.contents = post.getContents();
-            this.category = post.getCategory();
+            this.category = post.getCategory().getCategory();
+            this.hit = post.getHit();
             this.imageUrlList = urlList;
             this.imageName = nameList;
             this.createdAt = post.getCreatedAt();
@@ -82,7 +87,8 @@ public class PostResponseDto {
             this.nickname = post.getUser().getNickname();
             this.title = post.getTitle();
             this.contents = post.getContents();
-            this.category = post.getCategory();
+            this.category = post.getCategory().getCategory();
+            this.hit = post.getHit();
             this.postImageList = post.getPostImageList().stream().map(DetailPostImageResponseDto::new).toList();
             this.createdAt = post.getCreatedAt();
             this.modifiedAt = post.getModifiedAt();
@@ -99,6 +105,7 @@ public class PostResponseDto {
         private String title;
         private String contents;
         private String category;
+        private int hit;
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
         private List<CommentResponseDto> commentList = new ArrayList<>();
@@ -109,7 +116,8 @@ public class PostResponseDto {
             this.nickname = post.getUser().getNickname();
             this.title = post.getTitle();
             this.contents = post.getContents();
-            this.category = post.getCategory();
+            this.category = post.getCategory().getCategory();
+            this.hit = post.getHit();
             this.createdAt = post.getCreatedAt();
             this.modifiedAt = post.getModifiedAt();
             this.commentList = post.getCommentList().stream().map(CommentResponseDto::new).toList();
@@ -126,6 +134,7 @@ public class PostResponseDto {
         private String title;
         private String contents;
         private String category;
+        private int hit;
         private DetailPostImageResponseDto postImage;
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
@@ -135,7 +144,8 @@ public class PostResponseDto {
             this.nickname = post.getUser().getNickname();
             this.title = post.getTitle();
             this.contents = post.getContents();
-            this.category = post.getCategory();
+            this.category = post.getCategory().getCategory();
+            this.hit = post.getHit();
             this.createdAt = post.getCreatedAt();
             this.modifiedAt = post.getModifiedAt();
             if (!post.getPostImageList().isEmpty()) {
