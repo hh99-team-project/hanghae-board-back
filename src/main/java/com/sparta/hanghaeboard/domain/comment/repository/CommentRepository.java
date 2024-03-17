@@ -2,9 +2,6 @@ package com.sparta.hanghaeboard.domain.comment.repository;
 
 import com.sparta.hanghaeboard.domain.comment.dto.CommentResponseDto;
 import com.sparta.hanghaeboard.domain.comment.entity.Comment;
-import com.sparta.hanghaeboard.domain.post.entity.Post;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,5 +42,4 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 //        // 다른 필드 설정
 //        return dto;
 //    }
-    Page<Comment> findByPost(Post post, Pageable pageable);
 }

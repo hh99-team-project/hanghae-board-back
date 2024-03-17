@@ -8,9 +8,7 @@ import com.sparta.hanghaeboard.domain.user.entity.UserRoleEnum;
 import com.sparta.hanghaeboard.domain.user.repository.UserRepository;
 import com.sparta.hanghaeboard.global.common.exception.CustomException;
 import com.sparta.hanghaeboard.global.common.exception.ErrorCode;
-import com.sparta.hanghaeboard.global.user.jwt.JwtUtil;
 import com.sparta.hanghaeboard.global.user.security.UserDetailsImpl;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,7 +22,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
 
     // ADMIN_TOKEN
     private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
@@ -57,16 +54,10 @@ public class UserService {
     }
 
     @Transactional
-    public CheckResponseDto checkInfo(UserDetailsImpl userDetails, HttpServletResponse response) {
+    public CheckResponseDto checkInfo(UserDetailsImpl userDetails) {
 
         User user = userRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(()-> new CustomException(ErrorCode.NOT_EXIST_USER));
-
-        // JWT 토큰 생성
-        String token = jwtUtil.createToken(user.getEmail(), user.getRole());
-
-        // HTTP 응답 헤더에 JWT 토큰 추가
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
 
         CheckResponseDto checkResponseDto = null;
         if (user.getRole() == UserRoleEnum.REPORTER || user.getRole() == UserRoleEnum.USER) {
