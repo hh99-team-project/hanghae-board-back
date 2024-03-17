@@ -34,8 +34,6 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
-    @Autowired
-    private TokenBlacklist tokenBlacklist;
 
     // 회원 가입
     @PostMapping("/user/signup")
@@ -68,42 +66,5 @@ public class UserController {
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("회원정보가 틀렸습니다.");
 
-    }
-
-    // 블랙리스트
-    @GetMapping("/logout")
-    public ResponseEntity<String> logout (HttpServletRequest request, HttpServletResponse response) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        new SecurityContextLogoutHandler().logout(request, response, authentication);
-
-        // 로그아웃된 사용자의 토큰을 블랙리스트에 추가합니다.
-        String authToken = request.getHeader("Authorization");
-        if (authToken != null && authToken.startsWith("Bearer ")) {
-            String token = authToken.substring(7);
-            tokenBlacklist.addToBlacklist(token);
-            return ResponseEntity.ok("토큰을 블랙리스트에 추가하였습니다.");
-        }
-
-        return ResponseEntity.ok("로그아웃 되었습니다.");
-    }
-
-    // 블랙리스트
-    @GetMapping("/checkToken")
-    public ResponseEntity<String> checkToken(HttpServletRequest request) {
-        // 요청 헤더에서 토큰 추출
-        String authToken = request.getHeader("Authorization");
-        if (authToken == null || !authToken.startsWith("Bearer ")) {
-            return ResponseEntity.badRequest().body("유효한 토큰이 아닙니다.");
-        }
-
-        // 토큰에서 실제 토큰 값 추출
-        String token = authToken.substring(7);
-
-        // 블랙리스트에서 토큰 유효성 확인
-        if (tokenBlacklist.isBlacklisted(token)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("블랙리스트에 포함된 토큰입니다.");
-        } else {
-            return ResponseEntity.ok("토큰이 유효합니다.");
-        }
     }
 }

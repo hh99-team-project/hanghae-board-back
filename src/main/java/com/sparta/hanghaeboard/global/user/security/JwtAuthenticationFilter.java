@@ -94,11 +94,5 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         // 로그인 실패 메시지를 로그에 출력
         log.info("로그인 실패: {}", failed.getMessage());
-
-//        // 포스트맨으로 "로그인을 실패했습니다" 메시지 보내기
-//        response.getWriter().write("로그인을 실패했습니다");
-//        response.getWriter().flush();
-//        //utf8 인코딩을 하면 ??? 없어진다.
-////        response.encoding?
     }
 }
