@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,4 +40,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findByCategoryOrderByCommentListDesc(Pageable pageable, PostCategory category);
 
     // QueryDsl 방식 -> 나중에 Refactoring 필요
+    Optional<List<Post>> findAllByCategory(String category);
+
+    Page<Post> findById(Long id, Pageable pageable);
 }

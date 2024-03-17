@@ -6,7 +6,6 @@ import com.sparta.hanghaeboard.domain.post.dto.PostRequestDto.CreatePostRequestD
 import com.sparta.hanghaeboard.domain.post.dto.PostRequestDto.UpdatePostRequestDto;
 import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.CreatePostResponseDto;
 import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.GetPostListResponseDto;
-import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.GetPostResponseDto;
 import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.UpdatePostResponseDto;
 import com.sparta.hanghaeboard.domain.post.service.PostService;
 import com.sparta.hanghaeboard.global.common.dto.ResponseDto;
@@ -73,10 +72,9 @@ public class PostController {
     @Operation(summary = "게시글 상세 조회",
             description = "postId를 통한 게시글 상세 조회 - 게시글에 포함된 이미지, 댓글 포함")
     @GetMapping("/posts/{postId}")
-    public ResponseEntity<?> getPost(@PathVariable Long postId) {
-        GetPostResponseDto responseDto = postService.getPost(postId);
+    public ResponseEntity<?> getPost(@PathVariable Long postId, @RequestParam(value = "page", required = false, defaultValue = "1") int page) {
         postService.updateHit(postId); // views++
-        return ResponseEntity.ok().body(ResponseDto.success("상세 조회 성공", responseDto));
+        return ResponseEntity.ok().body(ResponseDto.success("상세 조회 성공", postService.getPost(postId, page)));
     }
 
     @Operation(summary = "게시글 hit순 조회",
