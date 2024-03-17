@@ -39,7 +39,7 @@ public class Post extends Timestamped {
     @JoinColumn(name = "user_id")
     private User user;
     // Comments 연결 필요
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comment> commentList;
     // image 연결
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
