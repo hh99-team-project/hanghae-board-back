@@ -3,6 +3,8 @@ package com.sparta.hanghaeboard.domain.post.service;
 import com.sparta.hanghaeboard.domain.comment.dto.CommentResponseDto;
 import com.sparta.hanghaeboard.domain.comment.entity.Comment;
 import com.sparta.hanghaeboard.domain.comment.repository.CommentRepository;
+import com.sparta.hanghaeboard.domain.comment.entity.Comment;
+import com.sparta.hanghaeboard.domain.comment.repository.CommentRepository;
 import com.sparta.hanghaeboard.domain.post.dto.PostRequestDto.*;
 import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto;
 import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.*;
@@ -217,8 +219,14 @@ public class PostService {
 
     public Page<GetPostListResponseDto> titleSearchPost(String title, Pageable pageable) {
         Page<Post> postPage = postRepository.findByTitleContaining(title, pageable);
+//        Page<Comment> getCommentsByPost(Post post, Pageable pageable);
         return postPage.map(GetPostListResponseDto::new);
     }
+
+    // 댓글
+//    public Page<Comment> getCommentsByPost (Post post, Pageable pageable) {
+//        return commentRepository.findByPost(post, pageable);
+//    }
 
     @Transactional(readOnly = true)
     public List<GetPostListResponseDto> getPostByCategoryList(String category) {
