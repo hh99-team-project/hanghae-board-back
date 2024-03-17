@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
+import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -72,10 +73,9 @@ public class PostController {
     @Operation(summary = "게시글 상세 조회",
             description = "postId를 통한 게시글 상세 조회 - 게시글에 포함된 이미지, 댓글 포함")
     @GetMapping("/posts/{postId}")
-    public ResponseEntity<?> getPost(@PathVariable Long postId) {
-        GetPostResponseDto responseDto = postService.getPost(postId);
-        postService.updateHit(postId); // hit
-        return ResponseEntity.ok().body(ResponseDto.success("상세 조회 성공", responseDto));
+    public ResponseEntity<?> getPost(@PathVariable Long postId, @RequestParam(value = "page", required = false, defaultValue = "1") int page) {
+        postService.updateHit(postId); // views++
+        return ResponseEntity.ok().body(ResponseDto.success("상세 조회 성공", postService.getPost(postId, page)));
     }
 
     @Operation(summary = "게시글 hit순 조회",
@@ -98,6 +98,7 @@ public class PostController {
     @GetMapping ("/posts/search")
     public ResponseEntity<?> searchPost (
             @RequestParam (value = "title", required = false) String title,
+            @RequestParam (value = "contents", required = false) String contents,// 이게 왜 안되는지 체크
 //            @RequestParam(required = false) String title,
             @RequestParam(required = false, defaultValue = "1")int num) {
 
@@ -105,6 +106,8 @@ public class PostController {
         int pageSize = 10; // 페이지당 표시할 데이터의 개수
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+
 
         Page<GetPostListResponseDto> postsPage;
         if (title == null || title.isEmpty()) {

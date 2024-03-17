@@ -1,8 +1,10 @@
 package com.sparta.hanghaeboard.domain.post.service;
 
+import com.sparta.hanghaeboard.domain.comment.dto.CommentResponseDto;
 import com.sparta.hanghaeboard.domain.comment.entity.Comment;
 import com.sparta.hanghaeboard.domain.comment.repository.CommentRepository;
 import com.sparta.hanghaeboard.domain.post.dto.PostRequestDto.*;
+import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto;
 import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.*;
 import com.sparta.hanghaeboard.domain.post.entity.Post;
 import com.sparta.hanghaeboard.domain.post.entity.PostCategory;
@@ -11,6 +13,7 @@ import com.sparta.hanghaeboard.domain.post.repository.PostImageRepository;
 import com.sparta.hanghaeboard.domain.post.repository.PostRepository;
 import com.sparta.hanghaeboard.domain.user.entity.User;
 import com.sparta.hanghaeboard.global.aws.service.S3UploadService;
+import com.sparta.hanghaeboard.global.common.dto.ResponseDto;
 import com.sparta.hanghaeboard.global.common.exception.CustomException;
 import com.sparta.hanghaeboard.global.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -18,14 +21,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.util.Pair;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -146,11 +150,42 @@ public class PostService {
 
     // 성능 향상을 위해, readOnly 설정
     @Transactional
-    public GetPostResponseDto getPost(Long postId) {
+    public Pair<GetPostResponseDto, Map<String, Object>> getPost(Long postId, int page) {
         Post post = postRepository.findById(postId).orElseThrow(() ->
                 new CustomException(ErrorCode.NOT_EXIST_POST)
         );
-        return new GetPostResponseDto(post);
+
+        int pageNumber = Math.max(page - 1, 0); // 페이지 번호는 사용자 입력과 동일하게 설정
+        int pageSize = 10; // 페이지당 표시할 데이터의 개수
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        // CommentRepository에서 Defalut 메서드 추가하여 CommentResponseDto의 Page 객체 반환하는
+        Page<CommentResponseDto> commentsPage = commentRepository.findAllDtoByPostId(postId, pageable);
+
+
+        // 현재 페이지 및 페이지 범위 계산
+        int nowPage = commentsPage.getPageable().getPageNumber() + 1; // 0부터 시작하므로 +1
+        int startPage = Math.max(nowPage - 4, 1); // 현재 페이지 기준으로 시작 페이지 설정
+        int endPage = Math.min(nowPage + 5, commentsPage.getTotalPages()); // 현재 페이지 기준으로 끝 페이지 설정
+
+        // 이전 페이지 및 다음 페이지의 존재 여부 계산
+        boolean hasNext = commentsPage.hasNext();
+        boolean hasPrev = commentsPage.hasPrevious();
+
+
+        // 응답으로 반환할 데이터를 Map에 담음
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("resultCode", "SUCCESS"); // 결과 코드 설정
+        responseBody.put("message", "검색 성공"); // 메시지 설정
+        responseBody.put("nowPage", nowPage); // 현재 페이지 번호
+        responseBody.put("startPage", startPage); // 시작 페이지 번호
+        responseBody.put("endPage", endPage); // 끝 페이지 번호
+        responseBody.put("hasNext", hasNext); // 다음 페이지 존재 여부
+        responseBody.put("hasPrev", hasPrev); // 이전 페이지 존재 여부
+        responseBody.put("data", commentsPage.getContent()); // 현재 페이지의 포스트 리스트
+
+        return Pair.of(new GetPostResponseDto(post), responseBody);
     }
 
     // 메인 페이지 7개 출력
@@ -182,14 +217,8 @@ public class PostService {
 
     public Page<GetPostListResponseDto> titleSearchPost(String title, Pageable pageable) {
         Page<Post> postPage = postRepository.findByTitleContaining(title, pageable);
-//        Page<Comment> getCommentsByPost(Post post, Pageable pageable);
         return postPage.map(GetPostListResponseDto::new);
     }
-
-    // 댓글
-//    public Page<Comment> getCommentsByPost (Post post, Pageable pageable) {
-//        return commentRepository.findByPost(post, pageable);
-//    }
 
     @Transactional(readOnly = true)
     public List<GetPostListResponseDto> getPostByCategoryList(String category) {

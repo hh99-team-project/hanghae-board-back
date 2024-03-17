@@ -1,5 +1,6 @@
 package com.sparta.hanghaeboard.domain.post.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sparta.hanghaeboard.domain.comment.dto.CommentResponseDto;
 import com.sparta.hanghaeboard.domain.post.dto.PostImageResponseDto.DetailPostImageResponseDto;
 import com.sparta.hanghaeboard.domain.post.entity.Post;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class PostResponseDto {
 
@@ -106,7 +108,9 @@ public class PostResponseDto {
         private String contents;
         private String category;
         private int hit;
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime createdAt;
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime modifiedAt;
         private List<CommentResponseDto> commentList = new ArrayList<>();
         private List<DetailPostImageResponseDto> postImageList = new ArrayList<>();
@@ -120,7 +124,7 @@ public class PostResponseDto {
             this.hit = post.getHit();
             this.createdAt = post.getCreatedAt();
             this.modifiedAt = post.getModifiedAt();
-            this.commentList = post.getCommentList().stream().map(CommentResponseDto::new).toList();
+//            this.commentList = post.getCommentList().stream().map(CommentResponseDto::new).toList();
             this.postImageList = post.getPostImageList().stream().map(DetailPostImageResponseDto::new).toList();
         }
     }
