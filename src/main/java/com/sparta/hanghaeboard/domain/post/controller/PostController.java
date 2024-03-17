@@ -1,11 +1,11 @@
 package com.sparta.hanghaeboard.domain.post.controller;
 
 
+import com.sparta.hanghaeboard.domain.post.dto.PagingDataResponseDto;
 import com.sparta.hanghaeboard.domain.post.dto.PostRequestDto.CreatePostRequestDto;
 import com.sparta.hanghaeboard.domain.post.dto.PostRequestDto.UpdatePostRequestDto;
 import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.CreatePostResponseDto;
 import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.GetPostListResponseDto;
-import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.GetPostResponseDto;
 import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.UpdatePostResponseDto;
 import com.sparta.hanghaeboard.domain.post.service.PostService;
 import com.sparta.hanghaeboard.global.common.dto.ResponseDto;
@@ -20,7 +20,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
-import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -89,8 +88,8 @@ public class PostController {
     @Operation(summary = "게시글 new, hot 조회",
             description = "type에 new 혹은 hot 입력, 5개 반환")
     @GetMapping("/posts/type/{type}")
-    public ResponseEntity<?> getTypePostList(@PathVariable String type) {
-        List<GetPostListResponseDto> postList = postService.getTypePostList(type);
+    public ResponseEntity<?> getTypePostList(@PathVariable String type, @RequestParam(defaultValue = "1") int num) {
+        PagingDataResponseDto<?> postList = postService.getTypePostList(type, num);
         return ResponseEntity.ok().body(ResponseDto.success("전체 게시글 new/hot 조회 성공", postList));
     }
 
@@ -150,9 +149,10 @@ public class PostController {
     @Operation(summary = "카테고리별 게시글 new(등록일순)/hot(댓글많은 순서) 조회",
             description = "카테고리 대소문자 상관x, type에 new 혹은 hot 입력, 5개 반환")
     @GetMapping("/posts/category/{category}/type/{type}")
-    public ResponseEntity<?> getTypePostByCategoryList(@PathVariable String category, @PathVariable String type) {
-        List<GetPostListResponseDto> postList = postService.getTypePostByCategoryList(category, type);
+    public ResponseEntity<?> getTypePostByCategoryList(@PathVariable String category,
+                                                       @PathVariable String type,
+                                                       @RequestParam(defaultValue = "1") int num) {
+        PagingDataResponseDto<?> postList = postService.getTypePostByCategoryList(category, type, num);
         return ResponseEntity.ok().body(ResponseDto.success("카테고리별 new/hot 게시글 조회 성공", postList));
     }
-
 }

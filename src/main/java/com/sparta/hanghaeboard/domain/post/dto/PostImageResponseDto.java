@@ -1,7 +1,6 @@
 package com.sparta.hanghaeboard.domain.post.dto;
 
 import com.sparta.hanghaeboard.domain.post.entity.PostImage;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

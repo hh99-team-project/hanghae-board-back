@@ -1,11 +1,14 @@
 package com.sparta.hanghaeboard.domain.post.service;
 
 import com.sparta.hanghaeboard.domain.comment.dto.CommentResponseDto;
-import com.sparta.hanghaeboard.domain.comment.entity.Comment;
 import com.sparta.hanghaeboard.domain.comment.repository.CommentRepository;
-import com.sparta.hanghaeboard.domain.post.dto.PostRequestDto.*;
-import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto;
-import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.*;
+import com.sparta.hanghaeboard.domain.post.dto.PagingDataResponseDto;
+import com.sparta.hanghaeboard.domain.post.dto.PostRequestDto.CreatePostRequestDto;
+import com.sparta.hanghaeboard.domain.post.dto.PostRequestDto.UpdatePostRequestDto;
+import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.CreatePostResponseDto;
+import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.GetPostListResponseDto;
+import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.GetPostResponseDto;
+import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.UpdatePostResponseDto;
 import com.sparta.hanghaeboard.domain.post.entity.Post;
 import com.sparta.hanghaeboard.domain.post.entity.PostCategory;
 import com.sparta.hanghaeboard.domain.post.entity.PostImage;
@@ -13,7 +16,6 @@ import com.sparta.hanghaeboard.domain.post.repository.PostImageRepository;
 import com.sparta.hanghaeboard.domain.post.repository.PostRepository;
 import com.sparta.hanghaeboard.domain.user.entity.User;
 import com.sparta.hanghaeboard.global.aws.service.S3UploadService;
-import com.sparta.hanghaeboard.global.common.dto.ResponseDto;
 import com.sparta.hanghaeboard.global.common.exception.CustomException;
 import com.sparta.hanghaeboard.global.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +25,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.util.Pair;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -198,15 +199,25 @@ public class PostService {
 
     // new, hot 에 따른 게시글 5개 반환
     @Transactional(readOnly = true)
-    public List<GetPostListResponseDto> getTypePostList(String type) {
-        Pageable page = PageRequest.of(0, 5);
+    public PagingDataResponseDto<?> getTypePostList(String type, int num) {
+        int pageNumber = Math.max(num - 1, 0);
+        Pageable page = PageRequest.of(pageNumber, 5);
         Page<Post> posts;
         if (type.equals("new")) {
             posts = postRepository.findByOrderByCreatedAtDesc(page);
         } else {
             posts = postRepository.findByOrderByCommentListDesc(page);
         }
-        return posts.stream().map(GetPostListResponseDto::new).toList();
+        int nowPage = posts.getPageable().getPageNumber() + 1;
+        int startPage = Math.max(nowPage - 4, 1); // 현재 페이지 기준으로 시작 페이지 설정
+        int endPage = Math.min(nowPage + 5, posts.getTotalPages()); // 현재 페이지 기준으로 끝 페이지 설정
+        boolean hasNext = posts.hasNext();
+        boolean hasPrev = posts.hasPrevious();
+        List<GetPostListResponseDto> listResponseDto = posts.stream().map(GetPostListResponseDto::new).toList();
+        PagingDataResponseDto<List<GetPostListResponseDto>> responseDto = new PagingDataResponseDto<>(
+                listResponseDto, nowPage, startPage, endPage, hasNext, hasPrev
+        );
+        return responseDto;
     }
 
     // 검색
@@ -229,16 +240,26 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<GetPostListResponseDto> getTypePostByCategoryList(String category, String type) {
+    public PagingDataResponseDto<?> getTypePostByCategoryList(String category, String type, int num) {
+        int pageNumber = Math.max(num - 1, 0);
         PostCategory postCategory = PostCategory.valueOf(category.toUpperCase());
-        Pageable page = PageRequest.of(0, 5);
+        Pageable page = PageRequest.of(pageNumber, 5);
         Page<Post> posts;
         if (type.equals("new")) {
             posts = postRepository.findByCategoryOrderByCreatedAtDesc(page, postCategory);
         } else {
             posts = postRepository.findByCategoryOrderByCommentListDesc(page, postCategory);
         }
-        return posts.stream().map(GetPostListResponseDto::new).toList();
+        int nowPage = posts.getPageable().getPageNumber() + 1;
+        int startPage = Math.max(nowPage - 4, 1); // 현재 페이지 기준으로 시작 페이지 설정
+        int endPage = Math.min(nowPage + 5, posts.getTotalPages()); // 현재 페이지 기준으로 끝 페이지 설정
+        boolean hasNext = posts.hasNext();
+        boolean hasPrev = posts.hasPrevious();
+        List<GetPostListResponseDto> listResponseDto = posts.stream().map(GetPostListResponseDto::new).toList();
+        PagingDataResponseDto<List<GetPostListResponseDto>> responseDto = new PagingDataResponseDto<>(
+                listResponseDto, nowPage, startPage, endPage, hasNext, hasPrev
+        );
+        return responseDto;
     }
 
     // hit 인기수

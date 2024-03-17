@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sparta.hanghaeboard.domain.comment.dto.CommentResponseDto;
 import com.sparta.hanghaeboard.domain.post.dto.PostImageResponseDto.DetailPostImageResponseDto;
 import com.sparta.hanghaeboard.domain.post.entity.Post;
-import com.sparta.hanghaeboard.domain.post.entity.PostImage;
-import com.sparta.hanghaeboard.global.common.exception.CustomException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +11,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class PostResponseDto {
 

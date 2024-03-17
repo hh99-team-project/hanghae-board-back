@@ -2,7 +2,6 @@ package com.sparta.hanghaeboard.domain.comment.repository;
 
 import com.sparta.hanghaeboard.domain.comment.dto.CommentResponseDto;
 import com.sparta.hanghaeboard.domain.comment.entity.Comment;
-import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
