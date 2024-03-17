@@ -3,6 +3,7 @@ package com.sparta.hanghaeboard.domain.post.service;
 import com.sparta.hanghaeboard.domain.post.dto.PostRequestDto.*;
 import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.*;
 import com.sparta.hanghaeboard.domain.post.entity.Post;
+import com.sparta.hanghaeboard.domain.post.entity.PostCategory;
 import com.sparta.hanghaeboard.domain.post.entity.PostImage;
 import com.sparta.hanghaeboard.domain.post.repository.PostImageRepository;
 import com.sparta.hanghaeboard.domain.post.repository.PostRepository;
@@ -13,6 +14,7 @@ import com.sparta.hanghaeboard.global.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -140,7 +142,7 @@ public class PostService {
     }
 
     // 성능 향상을 위해, readOnly 설정
-    @Transactional(readOnly = true)
+    @Transactional
     public GetPostResponseDto getPost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() ->
                 new CustomException(ErrorCode.NOT_EXIST_POST)
@@ -148,10 +150,25 @@ public class PostService {
         return new GetPostResponseDto(post);
     }
 
+    // 메인 페이지 7개 출력
     @Transactional(readOnly = true)
-    // 페이징 필요
-    public List<GetPostListResponseDto> getPostList() {
-        return postRepository.findAll().stream().map(GetPostListResponseDto::new).toList();
+    public List<GetPostListResponseDto> getMainPostList() {
+        Pageable page = PageRequest.of(0, 7);
+        Page<Post> topPosts = postRepository.findByOrderByHitDesc(page);
+        return topPosts.stream().map(GetPostListResponseDto::new).toList();
+    }
+
+    // new, hot 에 따른 게시글 5개 반환
+    @Transactional(readOnly = true)
+    public List<GetPostListResponseDto> getTypePostList(String type) {
+        Pageable page = PageRequest.of(0, 5);
+        Page<Post> posts;
+        if (type.equals("new")) {
+            posts = postRepository.findByOrderByCreatedAtDesc(page);
+        } else {
+            posts = postRepository.findByOrderByCommentListDesc(page);
+        }
+        return posts.stream().map(GetPostListResponseDto::new).toList();
     }
 
     // 검색
@@ -166,11 +183,24 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    // 페이징 필요
     public List<GetPostListResponseDto> getPostByCategoryList(String category) {
-        List<Post> postByCategoryList = postRepository.findAllByCategory(category).orElseThrow(()->
-                new CustomException(ErrorCode.NOT_EXIST_POST));
-        return postByCategoryList.stream().map(GetPostListResponseDto::new).toList();
+        PostCategory postCategory = PostCategory.valueOf(category.toUpperCase());
+        Pageable page = PageRequest.of(0, 7);
+        Page<Post> topPosts = postRepository.findByCategoryOrderByHitDesc(page, postCategory);
+        return topPosts.stream().map(GetPostListResponseDto::new).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<GetPostListResponseDto> getTypePostByCategoryList(String category, String type) {
+        PostCategory postCategory = PostCategory.valueOf(category.toUpperCase());
+        Pageable page = PageRequest.of(0, 5);
+        Page<Post> posts;
+        if (type.equals("new")) {
+            posts = postRepository.findByCategoryOrderByCreatedAtDesc(page, postCategory);
+        } else {
+            posts = postRepository.findByCategoryOrderByCommentListDesc(page, postCategory);
+        }
+        return posts.stream().map(GetPostListResponseDto::new).toList();
     }
 
     // hit 인기수
@@ -178,5 +208,4 @@ public class PostService {
     public int updateHit (Long id) {
         return postRepository.updateHit(id);
     }
-
 }

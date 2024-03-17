@@ -28,7 +28,8 @@ public class Post extends Timestamped {
 
     private String contents;
 
-    private String category;
+    @Enumerated(EnumType.STRING)
+    private PostCategory category;
 
     @Column (columnDefinition = "integer default 0", nullable = false)
     private int hit;
