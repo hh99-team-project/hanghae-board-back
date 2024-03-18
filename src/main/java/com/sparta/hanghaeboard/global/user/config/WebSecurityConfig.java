@@ -115,6 +115,8 @@ public class WebSecurityConfig {
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(false);
+        configuration.addExposedHeader(JwtUtil.AUTHORIZATION_HEADER);
+
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
