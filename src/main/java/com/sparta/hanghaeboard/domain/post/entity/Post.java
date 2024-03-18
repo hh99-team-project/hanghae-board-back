@@ -35,7 +35,7 @@ public class Post extends Timestamped {
     private int hit;
 
     // 연결 필요
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
     // Comments 연결 필요
@@ -48,6 +48,8 @@ public class Post extends Timestamped {
     public void update(UpdatePostRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
-        this.category = requestDto.getCategory();
+        if (requestDto.getCategory() != null) {
+            this.category = requestDto.getCategory();
+        }
     }
 }

@@ -16,7 +16,8 @@ public enum ErrorCode {
     FORBIDDEN("FORBIDDEN", "접근 권한이 없습니다. ADMIN에게 문의하세요.", HttpStatus.FORBIDDEN),
     UNAUTHORIZED("UNAUTHORIZED", "로그인 후 이용할 수 있습니다. 계정이 없다면 회원 가입을 진행해주세요.", HttpStatus.UNAUTHORIZED),
     NOT_EXIST_COMMENT("NOT_EXIST_COMMENT", "해당 댓글은 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
-    ADMIN_NOT_EQUALS("ADMIN_NOT_EQUALS","올바른 Admin Token을 넣어주세요" ,HttpStatus.BAD_REQUEST);
+    ADMIN_NOT_EQUALS("ADMIN_NOT_EQUALS","올바른 Admin Token을 넣어주세요" ,HttpStatus.BAD_REQUEST),
+    NOT_YOUR_POST("NOT_YOUR_POST","해당 게시글을 작성한 유저가 아닙니다." ,HttpStatus.BAD_REQUEST);
 
 
     private final String key;
