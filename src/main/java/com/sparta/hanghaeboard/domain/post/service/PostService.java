@@ -206,7 +206,7 @@ public class PostService {
         if (type.equals("new")) {
             posts = postRepository.findByOrderByCreatedAtDesc(page);
         } else {
-            posts = postRepository.findByOrderByCommentListDesc(page);
+            posts = postRepository.findAllOrderByCommentCountDesc(page);
         }
         int nowPage = posts.getPageable().getPageNumber() + 1;
         int startPage = Math.max(nowPage - 4, 1); // 현재 페이지 기준으로 시작 페이지 설정
@@ -245,10 +245,11 @@ public class PostService {
         PostCategory postCategory = PostCategory.valueOf(category.toUpperCase());
         Pageable page = PageRequest.of(pageNumber, 5);
         Page<Post> posts;
+        // NativeQuery는 String, QueryMethod는 Enum으로 바인딩해야 조회 가능
         if (type.equals("new")) {
             posts = postRepository.findByCategoryOrderByCreatedAtDesc(page, postCategory);
         } else {
-            posts = postRepository.findByCategoryOrderByCommentListDesc(page, postCategory);
+            posts = postRepository.findAllByCategoryOrderByCommentListDesc(page, category);
         }
         int nowPage = posts.getPageable().getPageNumber() + 1;
         int startPage = Math.max(nowPage - 4, 1); // 현재 페이지 기준으로 시작 페이지 설정
