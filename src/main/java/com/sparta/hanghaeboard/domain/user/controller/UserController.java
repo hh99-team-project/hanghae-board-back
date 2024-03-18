@@ -57,9 +57,9 @@ public class UserController {
 
     // 회원 정보 조회
     @GetMapping ("/auth")
-    public ResponseEntity<Object> checkInfo (@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<Object> checkInfo (@AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse response) {
 
-        CheckResponseDto checkResponseDto = userService.checkInfo(userDetails);
+        CheckResponseDto checkResponseDto = userService.checkInfo(userDetails, response);
 
         if (checkResponseDto != null) {
             return ResponseEntity.status(HttpStatus.OK).body(checkResponseDto);
