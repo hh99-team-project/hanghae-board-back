@@ -44,9 +44,14 @@ public class UserService {
         UserRoleEnum role;
 
         // adminToken에 입력된 내용이 있다면 관리자 암호와 일치 여부 확인
-        if (!ADMIN_TOKEN.equals(signupRequestDto.getAdminToken())) {
+        // 관리자 토큰이 비어 있는 경우 USER 역할 부여
+        if (signupRequestDto.getAdminToken().isEmpty()) {
             role = UserRoleEnum.USER;
         } else {
+            // 관리자 토큰이 비어 있지 않은 경우, 관리자 토큰이 올바른지 확인
+            if (!ADMIN_TOKEN.equals(signupRequestDto.getAdminToken())) {
+                throw new CustomException(ErrorCode.ADMIN_NOT_EQUALS);
+            }
             role = UserRoleEnum.REPORTER;
         }
 
