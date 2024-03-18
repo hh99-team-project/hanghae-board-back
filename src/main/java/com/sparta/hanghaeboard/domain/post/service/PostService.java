@@ -65,6 +65,11 @@ public class PostService {
     @Transactional
     public UpdatePostResponseDto updatePost(Long postId, UpdatePostRequestDto requestDto, MultipartFile[] multipartFileList, User user) throws IOException {
 
+        System.out.println("requestDto.getTitle() = " + requestDto.getTitle());
+        System.out.println(requestDto.getContents());
+        if (requestDto.getCategory() == null) {
+            System.out.println("null 이지롱");
+        }
         List<String> updateImageUrlList = new ArrayList<>();
         List<String> updateImageNameList = new ArrayList<>();
         if (requestDto.getImgId() == null && multipartFileList == null) {
@@ -137,7 +142,7 @@ public class PostService {
 
     public void deletePost(Long postId, User user) {
         Post post = postRepository.findByIdAndUser(postId, user).orElseThrow(() ->
-                new CustomException(ErrorCode.NOT_EXIST_POST)
+                new CustomException(ErrorCode.NOT_YOUR_POST)
         );
 
         // 게시글 삭제시, S3 서버에 저장된 이미지도 같이 삭제
