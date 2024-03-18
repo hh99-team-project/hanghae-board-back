@@ -8,6 +8,7 @@ import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.CreatePostRespons
 import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.GetPostListResponseDto;
 import com.sparta.hanghaeboard.domain.post.dto.PostResponseDto.UpdatePostResponseDto;
 import com.sparta.hanghaeboard.domain.post.service.PostService;
+import com.sparta.hanghaeboard.domain.user.entity.UserRoleEnum;
 import com.sparta.hanghaeboard.global.common.dto.ResponseDto;
 import com.sparta.hanghaeboard.global.user.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,6 +44,7 @@ public class PostController {
 
     @Operation(summary = "게시글 등록",
             description = "게시글 등록: title, contents, category, file")
+    @Secured(UserRoleEnum.Authority.REPORTER)
     @PostMapping(value = "/posts", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> createPost(@RequestPart(value = "files", required = false) MultipartFile[] multipartFileList,
                                         @RequestPart(value = "createPostRequestDto") CreatePostRequestDto requestDto,
@@ -52,6 +55,7 @@ public class PostController {
 
     @Operation(summary = "게시글 수정",
             description = "게시글 수정: title, contents, category, file")
+    @Secured(UserRoleEnum.Authority.REPORTER)
     @PostMapping(value = "/posts/{postId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> updateImgPost(@RequestPart(value = "files", required = false) MultipartFile[] multipartFileList,
                                            @RequestPart(value = "updatePostRequestDto") UpdatePostRequestDto requestDto,
@@ -63,6 +67,7 @@ public class PostController {
 
     @Operation(summary = "게시글 삭제",
             description = "유저 정보가 일치할 경우, 게시글 삭제 가능")
+    @Secured(UserRoleEnum.Authority.REPORTER)
     @DeleteMapping("/posts/{postId}")
     public ResponseEntity<?> deletePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         postService.deletePost(postId, userDetails.getUser());
