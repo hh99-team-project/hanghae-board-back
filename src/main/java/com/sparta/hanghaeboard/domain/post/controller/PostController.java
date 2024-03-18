@@ -97,7 +97,6 @@ public class PostController {
     @GetMapping ("/posts/search")
     public ResponseEntity<?> searchPost (
             @RequestParam (value = "title", required = false) String title,
-            @RequestParam (value = "contents", required = false) String contents,// 이게 왜 안되는지 체크
 //            @RequestParam(required = false) String title,
             @RequestParam(required = false, defaultValue = "1")int num) {
 
