@@ -31,14 +31,27 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     Page<Post> findByOrderByCreatedAtDesc(Pageable pageable);
 
-    Page<Post> findByOrderByCommentListDesc(Pageable pageable);
+
+    @Query(value = "SELECT p.*, COUNT(c.id) as comment_count " +
+            "FROM posts p LEFT JOIN comments c ON p.id = c.post_id " +
+            "GROUP BY p.id " +
+            "ORDER BY comment_count DESC",
+            countQuery = "SELECT COUNT(*) FROM (SELECT DISTINCT p.id FROM posts p LEFT JOIN comments c ON p.id = c.post_id GROUP BY p.id) as count_query",
+            nativeQuery = true)
+    Page<Post> findAllOrderByCommentCountDesc(Pageable pageable);
 
     Page<Post> findByCategoryOrderByHitDesc(Pageable pageable, PostCategory category);
 
     Page<Post> findByCategoryOrderByCreatedAtDesc(Pageable pageable, PostCategory category);
 
-    Page<Post> findByCategoryOrderByCommentListDesc(Pageable pageable, PostCategory category);
-
+    @Query(value = "SELECT p.*, COUNT(c.id) as comment_count " +
+            "FROM posts p LEFT JOIN comments c ON p.id = c.post_id " +
+            "WHERE p.category = :category " + // 카테고리 조건 추가
+            "GROUP BY p.id " +
+            "ORDER BY comment_count DESC",
+            countQuery = "SELECT COUNT(*) FROM (SELECT DISTINCT p.id FROM posts p LEFT JOIN comments c ON p.id = c.post_id WHERE p.category = :category GROUP BY p.id) as count_query",
+            nativeQuery = true)
+    Page<Post> findAllByCategoryOrderByCommentListDesc(Pageable pageable, String category);
     // QueryDsl 방식 -> 나중에 Refactoring 필요
     Optional<List<Post>> findAllByCategory(String category);
 
