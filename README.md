@@ -1,7 +1,6 @@
 # hh99-lv5
 
 <div align=center><h1>📌 ERD</h1></div>
- <img src="https://github.com/Song-dyong/lv5/assets/71509516/9fc3505b-33b8-42fc-ac86-cf26d4cb184c"> 
  <img width="783" alt="스크린샷 2024-03-12 오후 7 13 14" src="https://github.com/hh99-team-project/hanghae-board-back/assets/157681548/9c00b1ec-c640-4eb5-bf69-74729010b692">
 
 <br><br><br><br>
